@@ -1,6 +1,6 @@
 :root{
     --font-title : "Parisienne";
-    --font-family : "Cormorant", serif;
+    --font-family :  "Roboto", sans-serif;;
     --font-color : rgb(48, 21, 21); 
     --font-color-2 : rgb(105, 45, 45);
 }
@@ -27,9 +27,9 @@ button {
     align-items: center;
     cursor: pointer;
     border: none;
-    background-color: var(--font-color);
+    background-color: #F1F891;
     border-radius: 10px;
-    color: #fff;
+    color: var(--font-color);
     font-weight: 300;
     font-size: 26px;
     font-family: inherit;
