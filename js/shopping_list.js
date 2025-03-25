@@ -1,3 +1,24 @@
+// Add to shopping list
+function addToShoppingList(ingredient, quantity = "1") {
+    let shoppingList = JSON.parse(localStorage.getItem("shoppingList")) || [];
+
+    let existingItem = shoppingList.find(item => item.ingredient === ingredient);
+
+    if (existingItem) {
+        let existingQuantity = parseFloat(existingItem.quantity);
+        let quantityNumber = parseFloat(quantity);
+        let unit = existingItem.quantity.replace(existingQuantity, "").trim();
+
+        existingItem.quantity = (existingQuantity + quantityNumber) + unit;
+
+    } else {
+        shoppingList.push({ ingredient: ingredient, quantity: quantity });
+    }
+
+    localStorage.setItem("shoppingList", JSON.stringify(shoppingList));
+    console.log(JSON.parse(localStorage.getItem("shoppingList")));
+}
+
 // Number of ingredients on shopping list
 let ingredients = document.querySelectorAll(".ingredient");
 

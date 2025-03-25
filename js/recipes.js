@@ -48,21 +48,22 @@ function viewRecipe(index) {
         <button id="favoriteBtn" onclick="toggleFavorite(${index})">Ajouter aux favoris</button>
         <h3>Ingrédients :</h3>
         <ul>
-            ${recipe.ingredients.map(ingredient => {
-                if (typeof ingredient === 'object' && ingredient.quantite) {
-                  return `<li>${ingredient.nom} - ${ingredient.quantite} 
-                            <button onclick="addToShoppingList('${ingredient.nom}')">Ajouter à la liste</button>
-                          </li>`;
-                } else if (typeof ingredient === 'object') {
-                  return `<li>${ingredient.nom} 
-                            <button onclick="addToShoppingList('${ingredient.nom}')">Ajouter à la liste</button>
-                          </li>`;
-                } else {
-                  return `<li>${ingredient} 
-                            <button onclick="addToShoppingList('${ingredient}')">Ajouter à la liste</button>
-                          </li>`;
-                }
-            }).join('')}
+          ${recipe.ingredients.map(ingredient => {
+            const nomIngredientEscaped = ingredient.nom.replace(/'/g, "\\'"); // Échapper les apostrophes dans le onclick
+            if (typeof ingredient === 'object' && ingredient.quantite) {
+              return `<li>${ingredient.nom} - ${ingredient.quantite} 
+                        <button onclick="addToShoppingList('${nomIngredientEscaped}', '${ingredient.quantite}')">Ajouter à la liste</button>
+                      </li>`;
+            } else if (typeof ingredient === 'object') {
+              return `<li>${ingredient.nom} 
+                        <button onclick="addToShoppingList('${nomIngredientEscaped}', '1')">Ajouter à la liste</button>
+                      </li>`;
+            } else {
+              return `<li>${ingredient} 
+                        <button onclick="addToShoppingList('${nomIngredientEscaped}', '1')">Ajouter à la liste</button>
+                      </li>`;
+            }
+          }).join('')}
         </ul>
         <h3>Étapes :</h3>
         <ol>
@@ -119,39 +120,6 @@ function toggleFavorite(index) {
     // Enregistrer la liste mise à jour dans localStorage
     localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
     // Optionnel : mettre à jour l'interface (ex. modifier le bouton)
-}
-
-
-
-function addToShoppingList(ingredient) {
-    let shoppingList = JSON.parse(localStorage.getItem('shoppingList')) || [];
-    if (!shoppingList.includes(ingredient)) {
-        shoppingList.push(ingredient);
-        localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
-    }
-}
-
-try {
-    function generateShoppingListFile() {
-        const shoppingList = JSON.parse(localStorage.getItem('shoppingList')) || [];
-        const fileContent = shoppingList.join('\n');
-        const blob = new Blob([fileContent], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'liste_de_course.txt';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-        
-        // Optionnel : vider la liste de course après téléchargement
-        // localStorage.removeItem('shoppingList');
-    }
-} catch (error) {
-    console.error("Erreur lors de la génération:", error);
-    alert("Erreur lors du téléchargement");
 }
 
 
