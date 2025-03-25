@@ -1,63 +1,122 @@
-:root{
-    --font-title : "Parisienne";
-    --font-family :  "Roboto", sans-serif;;
-    --font-color : rgb(48, 21, 21);     
+:root {
+    --font-title: "Parisienne";
+    --font-family: "Roboto", sans-serif;
+    --color-1: #A93E16;
+    --color-2: #DF7240;
+    --color-3: #F3D0A7;
+    --color-4: #fdf6f6;
+    --color-5: #222222;
+    --color-6: #F1F891;
 }
 
 body {
     margin: 0;
     padding: 0;
-    font-family: var(--font-family)
+    font-family: var(--font-family);
 }
 
-header {
+/* HEADER */
+.header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 15px 20px;
-    color: white;
 }
 
+/* LOGO */
 .logo {
-    font-size: 1.5em;
     font-weight: bold;
     text-decoration: none;
-    color: var(--font-color);
+    color: var(--color-1);
     font-family: var(--font-title);
-    font-size: 7svh;
+    font-size: 5svh;
 }
 
+/* SEARCH */
 .search-container {
+    position: relative;
     display: flex;
     align-items: center;
-    position: relative;
+    transition: all 0.3s ease-in-out;
+    max-width: 40px; 
+    overflow: hidden;
 }
+
 
 .search-input {
     width: 0;
-    padding: 8px;
+    padding: 5px;
     border: none;
     outline: none;
-    transition: width 0.4s ease-in-out;
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    font-size: 20px;
-}
-
-.search-input.active {
-    width: 700%;
-    height: 30px;
-    opacity: 1;
-    border-radius: 5px;
-    border: 1px solid var(--font-color);
+    font-size: 16px;
+    transition: width 0.3s ease-in-out;
 }
 
 .search-icon {
-    font-size: 1.5em;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
-    width: 38px;
-    height: auto;
+    transition: opacity 0.3s ease-in-out;
 }
 
+/* Barre de recherche élargie */
+.search-container.expanded {
+    max-width: 100%;
+    flex: 1;
+}
 
+.search-container.expanded .search-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.search-container.expanded .search-icon {
+    display: none;
+}
+
+/* RÉSULTATS SOUS LE HEADER */
+.search-results {
+    position: absolute;
+    top: 100px;
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #ddd;
+    height: auto;
+    overflow-y: auto;
+    display: none;
+    padding: 10px;
+    z-index: 1000;
+}
+
+.recipe-result {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.recipe-result:hover {
+    background: var(--color-3);
+}
+
+.recipe-result h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.recipe-meta {
+    font-size: 12px;
+    color: gray;
+}
+
+/* Texte Aucun Résultat */
+.no-results {
+    text-align: center;
+    padding: 10px;
+    font-style: italic;
+    color: var(--color-5);
+}
