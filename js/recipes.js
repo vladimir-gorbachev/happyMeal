@@ -49,7 +49,7 @@ function viewRecipe(index) {
         <h3>Ingrédients :</h3>
         <ul>
           ${recipe.ingredients.map(ingredient => {
-            const nomIngredientEscaped = ingredient.nom.replace(/'/g, "\\'"); // Échapper les apostrophes dans le onclick
+            const nomIngredientEscaped = ingredient.nom.replace(/'/g, "\\'");
             if (typeof ingredient === 'object' && ingredient.quantite) {
               return `<li>${ingredient.nom} - ${ingredient.quantite} 
                         <button onclick="addToShoppingList('${nomIngredientEscaped}', '${ingredient.quantite}')">Ajouter à la liste</button>
