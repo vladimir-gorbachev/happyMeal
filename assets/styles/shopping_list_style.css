@@ -49,7 +49,7 @@ body {
 
     .ingredient {
         display: grid;
-        grid-template-columns: 7fr 1fr 0.5fr;
+        grid-template-columns: 7fr 1fr 1fr 0.5fr;
         gap: 16px;
     }
 
@@ -73,6 +73,11 @@ body {
         &:hover {
             cursor: pointer;
         }
+    }
+
+    .unit {
+        font-size: 14pt;
+        align-self: last baseline;
     }
 
     #remove {
@@ -195,7 +200,7 @@ body {
 .generatePDF {
     width: 100vw;
     height: 296mm;
-    padding: 32px 32px 0 152px;
+    padding: 32px 32px 0 160px;
     display: flex;
     flex-direction: column;
     font-size: 16pt;

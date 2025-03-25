@@ -49,18 +49,18 @@ function viewRecipe(index) {
         <h3>Ingrédients :</h3>
         <ul>
           ${recipe.ingredients.map(ingredient => {
-            const nomIngredientEscaped = ingredient.nom.replace(/'/g, "\\'");
-            if (typeof ingredient === 'object' && ingredient.quantite) {
-              return `<li>${ingredient.nom} - ${ingredient.quantite} 
-                        <button onclick="addToShoppingList('${nomIngredientEscaped}', '${ingredient.quantite}')">Ajouter à la liste</button>
+            const ingredientEscaped = ingredient.name.replace(/'/g, "\\'");
+            if (typeof ingredient === 'object' && ingredient.quantity) {
+              return `<li>${ingredient.name} - ${ingredient.quantity} 
+                        <button onclick="addToShoppingList('${ingredientEscaped}', '${ingredient.quantity}')">Ajouter à la liste</button>
                       </li>`;
             } else if (typeof ingredient === 'object') {
-              return `<li>${ingredient.nom} 
-                        <button onclick="addToShoppingList('${nomIngredientEscaped}', '1')">Ajouter à la liste</button>
+              return `<li>${ingredient.name} 
+                        <button onclick="addToShoppingList('${ingredientEscaped}', '1')">Ajouter à la liste</button>
                       </li>`;
             } else {
               return `<li>${ingredient} 
-                        <button onclick="addToShoppingList('${nomIngredientEscaped}', '1')">Ajouter à la liste</button>
+                        <button onclick="addToShoppingList('${ingredientEscaped}', '1')">Ajouter à la liste</button>
                       </li>`;
             }
           }).join('')}

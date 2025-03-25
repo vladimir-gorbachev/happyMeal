@@ -19,10 +19,19 @@ function addToShoppingList(ingredient, quantity = "1") {
 }
 
 // Display shopping list
+function parseQuantity(quantityString) {
+    let match = quantityString.match(/^([\d.]+)(\D*)$/);
+    if (match) {
+        return {
+            value: parseFloat(match[1]),
+            unit: match[2].trim()
+        };
+    }
+    return { value: 0, unit: "" };
+}
+
 let shoppingList = JSON.parse(localStorage.getItem("shoppingList"));
 let listContainer = document.querySelector(".ingredients");
-console.log(localStorage.getItem("shoppingList"));
-
 
 if (shoppingList && shoppingList.length > 0) {
     shoppingList.forEach(item => {
@@ -46,7 +55,8 @@ if (shoppingList && shoppingList.length > 0) {
         quantityInput.type = "number";
         quantityInput.step = 1;
         quantityInput.min = 1;
-        quantityInput.value = item.quantity;
+        let parsedQuantity = parseQuantity(item.quantity);
+        quantityInput.value = parsedQuantity.value;
 
         let quantityAdd = document.createElement("span");
         quantityAdd.classList.add("quantity-change");
@@ -64,6 +74,13 @@ if (shoppingList && shoppingList.length > 0) {
 
         li.appendChild(pName);
         li.appendChild(articleQuantity);
+        let unit;
+        if (parsedQuantity.unit) {
+            unit = document.createElement("p");
+            unit.classList.add("unit");
+            unit.innerHTML = `(en ${parsedQuantity.unit})`;
+            li.appendChild(unit);
+        }
         li.appendChild(btnDelete);
 
         listContainer.appendChild(li);
@@ -130,9 +147,11 @@ function generatePDF() {
     ingredients.forEach(ingredient => {
         let name = ingredient.querySelector(".name").innerText;
         let quantity = ingredient.querySelector(".quantity input").value;
+        let unitElement = ingredient.querySelector(".unit");
+        let unit = unitElement ? unitElement.innerText : ""; 
 
         let item = document.createElement("p");
-        item.textContent = `${quantity} - ${name}`;
+        item.innerHTML = unit ? `${quantity} ${unit} - ${name}` : `${quantity} - ${name}`;
         pdf.appendChild(item);
     });
 
