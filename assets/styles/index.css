@@ -1,53 +1,43 @@
-:root{
-    --font-title : "Parisienne";
-    --font-family :  "Roboto", sans-serif;;
-    --color-1 : #A93E16; 
-    --color-2 : #DF7240;
-    --color-3 : #F3D0A7;
-    --color-4 : #fdf6f6;
-    --color-5 : #222222;
-    --color-6 : #F1F891;
+:root {
+    --font-title: "Zen Loop", cursive;
+    --font-family: "Albert Sans", sans-serif;
+    --color-1: #F1F891;
+    --color-2: #BC2010;
+    --color-3: #750204;
+    --color-4: #fff;
+    --color-5: #222222;
 }
 
 main{
     display: flex;
-    justify-content: center;
+    background-color: var(--color-1);
+    height: 100vh;
+    flex-flow: column nowrap;
+
+    a{
+        text-decoration: none;
+    }
 }
 
-a {
-    text-decoration: none; 
-    color: inherit; 
-    display: inline-block;
-    justify-items: center;
-}
-
-button {
-    position: relative;
-    margin: 0;
-    padding: 0.8em 1em;
-    outline: none;
-    text-decoration: none;
+.index-top{
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    text-align: center;
+
+    span{
+        font-family: var(--font-title);
+        font-size: 60px;
+    }
+}
+button {
+    padding: 0.8em 1em;
     cursor: pointer;
     border: none;
-    background-color: #F1F891;
-    border-radius: 10px;
-    color: var(--color-1);
-    font-size: 26px;
-    font-family: inherit;
-    font-weight: bold;
-    z-index: 0;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.02, 0.01, 0.47, 1);
-    height: 10svh;
-  }
-
-.main{
-    display: flex;
-    flex-flow: column nowrap;
-    flex-grow: 1;
+    background-color: var(--color-2);
+    border-radius: 12px;
+    color: var(--color-4);
+    font-size: 20px;
 }
 
 .display-container {
@@ -96,7 +86,6 @@ button {
 .recipe-card p {
     font-size: 1rem;
     color: #666;
-
 }
 
 .recipe-card button {

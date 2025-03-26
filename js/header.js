@@ -15,10 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initSearchSystem() {
     const searchInput = document.querySelector(".search-input");
-    const searchIcon = document.querySelector(".search-icon");
     const searchContainer = document.querySelector(".search-container");
     
-    if (!searchInput || !searchIcon || !searchContainer) return;
+    if (!searchInput || !searchContainer) return;
 
     const resultsContainer = document.createElement("div");
     resultsContainer.className = "search-results";
@@ -94,11 +93,6 @@ function initSearchSystem() {
         resultsContainer.style.display = "block";
     };
 
-    searchIcon.addEventListener('click', (e) => {
-        searchContainer.classList.add('expanded');
-        searchInput.focus();
-        e.stopPropagation();
-    });
 
     searchInput.addEventListener('input', () => {
         clearTimeout(searchTimer);
@@ -107,12 +101,13 @@ function initSearchSystem() {
 
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === "Enter") {
-            clearTimeout(searchTimer);
-            performSearch();
+            const searchTerm = searchInput.value.trim();
+            if (searchTerm.length > 1) {
+                window.location.href = `search_results.html?query=${encodeURIComponent(searchTerm)}`;
+            }
         }
     });
-
-    // 🔄 Réinitialisation quand on clique en dehors
+    
     document.addEventListener('click', (e) => {
         if (!searchContainer.contains(e.target) && !resultsContainer.contains(e.target)) {
             searchContainer.classList.remove('expanded');
