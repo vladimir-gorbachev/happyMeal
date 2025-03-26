@@ -5,12 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recettes</title>
 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+    
+    <script src="js/header.js" defer></script>
+    <script src="js/footer.js" defer></script>
+
     
     <link rel="stylesheet" href="assets/styles/style.css">
+
     <link rel="stylesheet" href="assets/styles/recipes.css">
 
     <script src="js/recipes.js" defer></script>
-    <script defer src="js/shopping_list.js"></script>
+    <script src="js/shopping_list.js" defer></script>
+    <script src="https://cdn.tailwindcss.com" defer></script>
+
     <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon">
 
 
@@ -18,14 +30,20 @@
 <body>
     <header></header>
     <main>
-        <section class="display-container">
+        <section id="modalOverlay" class="fixed justify-center hidden z-100 flex flex-wrap p-4">
+            <div id="modalContent" class="bg-white rounded p-3 flex flex-wrap w-4/5">
+                <button class="absolute  p-2 top-2 right-2 text-gray-600 text-xl" onclick="closeModal()">&times;</button>
+            
+                <article id="recipeDetails"></div>
+            </div>
+        </section>
+        
+        <section >
             <div id="recipesContainer"></div>
-            <div id="recipeDetails"></div>
         </section>
         
         <div id="pagination"></div>
     </main>
-
     <footer></footer>
 
 </body>
