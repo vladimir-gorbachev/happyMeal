@@ -1,202 +1,214 @@
 async function loadRecipes() {
-    try {
-        const response = await fetch('data/recipes.json'); // Charger le JSON
-        const data = await response.json(); // Convertir en objet JS
-        return data.recettes; // Retourner les données
-    } catch (error) {
-        console.error("Erreur lors du chargement des recettes : ", error);
-        return []; // Retourne un tableau vide en cas d'erreur
-    }
+  try {
+      const response = await fetch('data/recipes.json'); // Load JSON file
+      const data = await response.json(); // Convert to JS object
+      return data.recettes; // Keep original JSON key
+  } catch (error) {
+      console.error("Error loading recipes: ", error);
+      return []; // Return an empty array in case of error
+  }
 }
 
 const recipesPerPage = 9;
 let currentPage = 1;
 let allRecipes = [];
 
-async function displayRecipes(page = 1) {
-    const container = document.getElementById('recipesContainer');
-    container.innerHTML = ''; // Vider le conteneur avant d'afficher
+function displayRecipes(page = 1) {
+  const container = document.getElementById('recipesContainer');
+  container.className = "flex flex-wrap gap-4 justify-center"; 
+  container.innerHTML = '';
 
-    const start = (page - 1) * recipesPerPage;
-    const end = start + recipesPerPage;
-    const recipesToShow = allRecipes.slice(start, end);
+  const start = (page - 1) * recipesPerPage;
+  const end = start + recipesPerPage;
+  const recipesToShow = allRecipes.slice(start, end);
 
-    recipesToShow.forEach((recipe, index) => {
-        const recipeCard = document.createElement('div');
-        recipeCard.classList.add('recipe-card');
-        recipeCard.innerHTML = `
-            <h3>${recipe.nom}</h3>
-            <p><strong>Catégorie :</strong> ${recipe.categorie}</p>
-            <p><strong>Temps :</strong> ${recipe.temps_preparation}</p>
-            <button onclick="viewRecipe(${start + index})">Voir la recette</button>
-        `;
-        container.appendChild(recipeCard);
-    });
+  recipesToShow.forEach((recipe, index) => {
+      const recipeCard = document.createElement('article');
+      recipeCard.className = 'bg-white rounded-lg shadow-md overflow-hidden w-full md:w-[calc(33.333%-1rem)] h-50 flex flex-col'; // 33.33% - gap
 
-    updatePaginationButtons();
+      recipeCard.innerHTML = `
+          <div class="p-4 flex-grow flex flex-col">
+              <h3 class="font-bold text-lg mb-2 line-clamp-2">${recipe.nom}</h3>
+              <p class="text-gray-600 mb-1">${recipe.categorie}</p>
+              <p class="text-gray-500 text-sm">⏱ ${recipe.temps_preparation}</p>
+              <div class="mt-auto flex justify-between items-center">
+                  <button onclick="viewRecipe(${start + index})" class="viewRecipeButton ">Voir la recette </button>
+                  <button id="favoriteBtn" onclick="toggleFavorite(${index})">♡</button>
+              </div>
+          </div>
+      `;
+
+      container.appendChild(recipeCard);
+  });
+
+  updatePaginationButtons();
 }
 
 function viewRecipe(index) {
-    const recipe = allRecipes[index];
-    if (!recipe) return;
-    
-    const detailsContainer = document.getElementById('recipeDetails');
-    detailsContainer.innerHTML = `
-        <h2>${recipe.nom}</h2>
-        <p><strong>Catégorie :</strong> ${recipe.categorie}</p>
-        <p><strong>Temps de préparation :</strong> ${recipe.temps_preparation}</p>
-        <button id="favoriteBtn" onclick="toggleFavorite(${index})">Ajouter aux favoris</button>
-        <h3>Ingrédients :</h3>
-        <ul>
-          ${recipe.ingredients.map(ingredient => {
-            const ingredientEscaped = ingredient.name.replace(/'/g, "\\'");
-            if (typeof ingredient === 'object' && ingredient.quantity) {
-              return `<li>${ingredient.name} - ${ingredient.quantity} 
-                        <button onclick="addToShoppingList('${ingredientEscaped}', '${ingredient.quantity}')">Ajouter à la liste</button>
-                      </li>`;
-            } else if (typeof ingredient === 'object') {
-              return `<li>${ingredient.name} 
-                        <button onclick="addToShoppingList('${ingredientEscaped}', '1')">Ajouter à la liste</button>
-                      </li>`;
-            } else {
-              return `<li>${ingredient} 
-                        <button onclick="addToShoppingList('${ingredientEscaped}', '1')">Ajouter à la liste</button>
-                      </li>`;
-            }
-          }).join('')}
-        </ul>
-        <h3>Étapes :</h3>
-        <ol>
-            ${recipe.etapes.map(etape => `<li>${etape}</li>`).join('')}
-        </ol>
-    `;
+  const recipe = allRecipes[index];
+  if (!recipe) return;
+
+  const detailsContainer = document.getElementById('recipeDetails');
+  detailsContainer.innerHTML = `
+      <h2>${recipe.nom}</h2>
+      <p>Catégorie: ${recipe.categorie}</p>
+      <p>Temps de préparation: ${recipe.temps_preparation}</p>
+      <button id="favoriteBtn" onclick="toggleFavorite(${index})">♡</button>
+      <h3>Ingrédients:</h3>
+      <ul>
+        ${recipe.ingredients.map(ingredient => {
+          const escapedIngredient = ingredient.nom.replace(/'/g, "\\'");
+          return `
+            <li>${ingredient.nom} ${ingredient.quantite ? `- ${ingredient.quantite}` : ''}
+              <button onclick="addToShoppingList('${escapedIngredient}', '${ingredient.quantite || '1'}')">Ajouter</button>
+            </li>
+          `;
+        }).join('')}
+      </ul>
+      <h3>Étapes:</h3>
+      <ol>
+          ${recipe.etapes.map(step => `<li>${step}</li>`).join('')}
+      </ol>
+      <button onclick="" class="rounded" >  addtoplanning </button>
+  `;
+
+  openModal();
 }
 
-
-
 async function initRecipesPage() {
-    allRecipes = await loadRecipes();
-    displayRecipes();
+  allRecipes = await loadRecipes();
+  displayRecipes();
 }
 
 document.addEventListener("DOMContentLoaded", initRecipesPage);
 
-
 function updatePaginationButtons() {
-    const paginationContainer = document.getElementById('pagination');
-    paginationContainer.innerHTML = '';
+  const paginationContainer = document.getElementById('pagination');
+  paginationContainer.innerHTML = '';
+  paginationContainer.className = "flex justify-center"
 
-    const totalPages = Math.ceil(allRecipes.length / recipesPerPage);
-    
-    for (let i = 1; i <= totalPages; i++) {
-        const button = document.createElement('button');
-        button.innerText = i;
-        button.classList.add('pagination-btn');
-        if (i === currentPage) button.classList.add('active');
+  const totalPages = Math.ceil(allRecipes.length / recipesPerPage);
 
-        button.addEventListener('click', () => {
-            currentPage = i;
-            displayRecipes(i);
-        });
+  for (let i = 1; i <= totalPages; i++) {
+      const button = document.createElement('button');
+      button.innerText = i + ",";
+      button.className = "p-1"
+      if (i === currentPage) button.style.fontWeight = "bold";
 
-        paginationContainer.appendChild(button);
-    }
+      button.addEventListener('click', () => {
+          currentPage = i;
+          displayRecipes(i);
+      });
+
+      paginationContainer.appendChild(button);
+  }
 }
 
 function toggleFavorite(index) {
-    // Récupérer les favoris existants depuis localStorage
-    let favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
-    const recipe = allRecipes[index];
+  let favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
+  const recipe = allRecipes[index];
 
-    // Vérifier si la recette est déjà dans les favoris (en se basant ici sur le nom par exemple)
-    const exists = favorites.find(r => r.nom === recipe.nom);
-    if (exists) {
-        // Si la recette existe, on la retire
-        favorites = favorites.filter(r => r.nom !== recipe.nom);
-    } else {
-        // Sinon, on l'ajoute
-        favorites.push(recipe);
-    }
-    // Enregistrer la liste mise à jour dans localStorage
-    localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
-    // Optionnel : mettre à jour l'interface (ex. modifier le bouton)
+  const exists = favorites.find(recipe => recipe.nom === recipe.nom);
+  if (exists) {
+      favorites = favorites.filter(recipe => recipe.nom !== recipe.nom);
+  } else {
+      favorites.push(recipe);
+  }
+
+  localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
 }
-
-
-// _____________FAVORITE_RECIPES ___________________________
 
 document.addEventListener("DOMContentLoaded", initFavoriteRecipes);
 
 function initFavoriteRecipes() {
-  // Récupérer les recettes favorites enregistrées dans le localStorage
   let favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
   displayFavoriteRecipes(favorites);
 }
-
 function displayFavoriteRecipes(favorites) {
   const container = document.getElementById('favoritesContainer');
-  container.innerHTML = ''; // On vide le conteneur avant affichage
+  container.className = "flex flex-wrap gap-4 justify-center"; // Même layout Flexbox
+  container.innerHTML = '';
 
-  // Si aucune recette favorite n'est enregistrée
   if (favorites.length === 0) {
-    container.innerHTML = '<p>Aucune recette favorite n\'a été ajoutée.</p>';
-    return;
+      container.innerHTML = '<p class="text-center w-full py-8 text-gray-500">Pas encore de recettes favorites</p>';
+      return;
   }
 
-  // Affichage de chaque recette favorite sous forme de "carte"
   favorites.forEach((recipe, index) => {
-    const card = document.createElement('div');
-    card.classList.add('recipe-card');
-    card.innerHTML = `
-      <h3>${recipe.nom}</h3>
-      <p><strong>Catégorie :</strong> ${recipe.categorie}</p>
-      <p><strong>Temps :</strong> ${recipe.temps_preparation}</p>
-      <button onclick="viewFavoriteRecipe(${index})">Voir la recette</button>
-      <button onclick="removeFavorite(${index})">Retirer des favoris</button>
-    `;
-    container.appendChild(card);
+      const card = document.createElement('article');
+      card.className = 'bg-white rounded-lg shadow-md overflow-hidden w-full md:w-[calc(33.333%-1rem)] h-50 flex flex-col'; // Mêmes dimensions
+
+      card.innerHTML = `
+          <div class="p-4 flex-grow flex flex-col">
+              <h3 class="font-bold text-lg mb-2 line-clamp-2">${recipe.nom}</h3>
+              <p class="text-gray-600 mb-1">${recipe.categorie}</p>
+              <p class="text-gray-500 text-sm">⏱ ${recipe.temps_preparation}</p>
+              <div class="mt-auto flex justify-between items-center">
+                  <button onclick="viewRecipe(${allRecipes.findIndex(r => r.nom === recipe.nom)})" class="viewRecipeButton"> Voir la recette </button>
+                  <button onclick="removeFavorite(${index})" class="rounded" > ♡ </button>
+              </div>
+          </div>
+      `;
+
+      container.appendChild(card);
   });
 }
 
 function viewFavoriteRecipe(index) {
-    // Récupération de la recette favorite à afficher
-    const favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
-    const recipe = favorites[index];
-    if (!recipe) return;
-  
-    // Affichage des détails de la recette avec vérification pour l'affichage de la quantité
-    const detailsContainer = document.getElementById('recipeDetails');
-    detailsContainer.innerHTML = `
+  const favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
+  const recipe = favorites[index];
+  if (!recipe) return;
+
+  const detailsContainer = document.getElementById('recipeDetails');
+  detailsContainer.innerHTML = `
       <h2>${recipe.nom}</h2>
-      <p><strong>Catégorie :</strong> ${recipe.categorie}</p>
-      <p><strong>Temps de préparation :</strong> ${recipe.temps_preparation}</p>
-      <h3>Ingrédients :</h3>
+      <p>Temps de préparation: ${recipe.temps_preparation}</p>
+      <p>Catégorie: ${recipe.categorie}</p>
+      <h3>Ingrédients:</h3>
       <ul>
-        ${recipe.ingredients.map(ingredient => {
-            if (typeof ingredient === 'object' && ingredient.quantite) {
-              return `<li>${ingredient.nom} - ${ingredient.quantite}</li>`;
-            } else if (typeof ingredient === 'object') {
-              return `<li>${ingredient.nom}</li>`;
-            } else {
-              return `<li>${ingredient}</li>`;
-            }
-        }).join('')}
+          ${recipe.ingredients.map(ingredient => `
+              <li>${ingredient.nom} ${ingredient.quantite ? `- ${ingredient.quantite}` : ''}</li>
+          `).join('')}
       </ul>
-      <h3>Étapes :</h3>
+      <h3>Étapes:</h3>
       <ol>
-        ${recipe.etapes.map(etape => `<li>${etape}</li>`).join('')}
+          ${recipe.etapes.map(step => `<li>${step}</li>`).join('')}
       </ol>
-    `;
+      <button onclick="" class="rounded" >  addtoplanning </button>
+  `;
+
+  openModal();
 }
-  
 
 function removeFavorite(index) {
-  // Récupérer les recettes favorites actuelles
   let favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
-  // Retirer la recette à l'index donné
   favorites.splice(index, 1);
-  // Mettre à jour le localStorage avec la nouvelle liste
   localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
-  // Réafficher la liste mise à jour
   displayFavoriteRecipes(favorites);
 }
+
+// _____________________MODAL ____________________________
+
+function openModal() {
+  const modal = document.getElementById("modalOverlay");
+  modal.style.display = "block";
+}
+
+function closeModal() {
+  const modal = document.getElementById("modalOverlay");
+  modal.style.display = "none";
+}
+
+// Close modal when clicking on the overlay
+document.getElementById("modalOverlay").addEventListener("click", function(event) {
+  if (event.target === this) {
+      closeModal();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener("keydown", function(event) {
+  if (event.key === "Escape") {
+      closeModal();
+  }
+});
