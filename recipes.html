@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="assets/styles/index.css">
+    
     <script src="js/header.js" defer></script>
     <script src="js/footer.js" defer></script>
 
@@ -29,13 +29,12 @@
 </head>
 <body>
     <header></header>
-    <header></header>
     <main>
-        <section id="modalOverlay" class="border rounded-md h-3/5 hidden inset-0 sticky flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
-            <div id="modalContent" class=" bg-white p-6 rounded-lg max-w-lg w-full relative transform scale-95 transition-transform duration-300 ease-in-out">
-                <button class="absolute top-2 right-2 text-gray-600 text-xl" onclick="closeModal()">&times;</button>
+        <section id="modalOverlay" class="fixed justify-center hidden z-100 flex flex-wrap">
+            <div id="modalContent" class="bg-white rounded p-3 flex flex-wrap w-4/5">
+                <button class="absolute  p-2 top-2 right-2 text-gray-600 text-xl" onclick="closeModal()">&times;</button>
             
-                <div id="recipeDetails"></div>
+                <article id="recipeDetails"></div>
             </div>
         </section>
         
@@ -46,8 +45,6 @@
         <div id="pagination"></div>
     </main>
     <footer></footer>
-
-    
 
 </body>
 </html>
