@@ -28,13 +28,13 @@ function displayRecipes(page = 1) {
 
       recipeCard.innerHTML = `
           <div class="p-4 flex-grow flex flex-col">
-              <h3 class="font-bold text-lg mb-2 line-clamp-2">${recipe.nom}</h3>
-              <img src="${recipe.image}" alt="${recipe.nom}" class="w-full h-40 object-cover rounded">
+              <h2 class="font-bold text-lg mb-2 pb-4 line-clamp-2">${recipe.nom}</h2>
+              <img src="${recipe.image}" alt="${recipe.nom}" class="h-40 object-cover rounded">
               <p class="text-gray-600 mb-1">${recipe.categorie}</p>
               <p class="text-gray-500 text-sm">⏱ ${recipe.temps_preparation}</p>
               <div class="mt-auto flex justify-between items-center">
                   <button onclick="viewRecipe(${start + index})" class="viewRecipeButton ">Voir la recette </button>
-                  <button id="favoriteBtn" onclick="toggleFavorite(${index})">♡</button>
+                  <button onclick="toggleFavorite(${index})">♡</button>
               </div>
           </div>
       `;
@@ -51,26 +51,34 @@ function viewRecipe(index) {
 
   const detailsContainer = document.getElementById('recipeDetails');
   detailsContainer.innerHTML = `
-      <h2>${recipe.nom}</h2>
-      <p>Catégorie: ${recipe.categorie}</p>
-      <p>Temps de préparation: ${recipe.temps_preparation}</p>
-      <button id="favoriteBtn" onclick="toggleFavorite(${index})">♡</button>
-      <h3>Ingrédients:</h3>
-      <ul>
-        ${recipe.ingredients.map(ingredient => {
-          const escapedIngredient = ingredient.nom.replace(/'/g, "\\'");
-          return `
-            <li>${ingredient.nom} ${ingredient.quantite ? `- ${ingredient.quantite}` : ''}
-              <button onclick="addToShoppingList('${escapedIngredient}', '${ingredient.quantite || '1'}')">Ajouter</button>
-            </li>
-          `;
-        }).join('')}
-      </ul>
-      <h3>Étapes:</h3>
-      <ol>
-          ${recipe.etapes.map(step => `<li>${step}</li>`).join('')}
-      </ol>
-      <button onclick="" class="rounded" >  addtoplanning </button>
+      <div class="p-4 flex-grow flex flex-col">
+        <h2 class="font-bold pb-4">${recipe.nom}</h2>
+        <figure class="flex">
+          <img src="${recipe.image}" alt="${recipe.nom}" class="w-1/2 max-h-80 object-cover rounded p-4">
+          <figcaption>
+            <h3 class="pb-4"><span class="font-bold">Catégorie </span> : ${recipe.categorie}</h3>
+            <p class="pb-4"><span class="font-bold">Temps de préparation:</span> ${recipe.temps_preparation}</p>
+            <h3 class="font-bold">Ingrédients:</h3>
+            <ul>
+              ${recipe.ingredients.map(ingredient => {
+                const escapedIngredient = ingredient.nom.replace(/'/g, "\\'");
+                return `
+                  <li>${ingredient.nom} ${ingredient.quantite ? `- ${ingredient.quantite}` : ''}
+                    <button onclick="addToShoppingList('${escapedIngredient}', '${ingredient.quantite || '1'}')">Ajouter</button>
+                  </li>
+                `;
+              }).join('')}
+            </ul>          
+          </figcaption>
+          <button class="bg-red" onclick="toggleFavorite(${index})"><3</button>
+        </figure>
+        
+        <h3 class="font-bold">Étapes:</h3>
+        <ol class="m-2">
+            ${recipe.etapes.map(step => `<li>${step}</li>`).join('')}
+        </ol>
+        <button onclick="" class="rounded" >  addtoplanning </button>
+      </div>
   `;
 
   openModal();
@@ -127,7 +135,7 @@ function initFavoriteRecipes() {
 }
 function displayFavoriteRecipes(favorites) {
   const container = document.getElementById('favoritesContainer');
-  container.className = "flex flex-wrap gap-4 justify-center"; // Même layout Flexbox
+  container.className = "flex flex-wrap gap-4 justify-center";
   container.innerHTML = '';
 
   if (favorites.length === 0) {
@@ -141,9 +149,10 @@ function displayFavoriteRecipes(favorites) {
 
       card.innerHTML = `
           <div class="p-4 flex-grow flex flex-col">
-              <h3 class="font-bold text-lg mb-2 line-clamp-2">${recipe.nom}</h3>
-              <p class="text-gray-600 mb-1">${recipe.categorie}</p>
-              <p class="text-gray-500 text-sm">⏱ ${recipe.temps_preparation}</p>
+              <h2 >${recipe.nom}</h2>
+              <img src="${recipe.image}" alt="${recipe.nom}" class="w-4/5 h-40 object-cover rounded">
+              <h3>${recipe.categorie}</h3>
+              <p>⏱ ${recipe.temps_preparation}</p>
               <div class="mt-auto flex justify-between items-center">
                   <button onclick="viewRecipe(${allRecipes.findIndex(r => r.nom === recipe.nom)})" class="viewRecipeButton"> Voir la recette </button>
                   <button onclick="removeFavorite(${index})" class="rounded" > ♡ </button>
@@ -162,20 +171,33 @@ function viewFavoriteRecipe(index) {
 
   const detailsContainer = document.getElementById('recipeDetails');
   detailsContainer.innerHTML = `
-      <h2>${recipe.nom}</h2>
-      <p>Temps de préparation: ${recipe.temps_preparation}</p>
-      <p>Catégorie: ${recipe.categorie}</p>
-      <h3>Ingrédients:</h3>
-      <ul>
-          ${recipe.ingredients.map(ingredient => `
-              <li>${ingredient.nom} ${ingredient.quantite ? `- ${ingredient.quantite}` : ''}</li>
-          `).join('')}
-      </ul>
-      <h3>Étapes:</h3>
-      <ol>
-          ${recipe.etapes.map(step => `<li>${step}</li>`).join('')}
-      </ol>
-      <button onclick="" class="rounded" >  add toplanning </button>
+      <div class="p-4 flex-grow flex flex-col">
+        <h2 class="font-bold pb-4">${recipe.nom}</h2>
+        <figure class="flex">
+          <img src="${recipe.image}" alt="${recipe.nom}" class="w-1/2 max-h-80 object-cover rounded p-4">
+          <figcaption>
+            <h3 class="pb-4"><span class="font-bold">Catégorie </span> : ${recipe.categorie}</h3>
+            <p class="pb-4"><span class="font-bold">Temps de préparation:</span> ${recipe.temps_preparation}</p>
+            <h3 class="font-bold">Ingrédients:</h3>
+            <ul>
+              ${recipe.ingredients.map(ingredient => {
+                const escapedIngredient = ingredient.nom.replace(/'/g, "\\'");
+                return `
+                  <li>${ingredient.nom} ${ingredient.quantite ? `- ${ingredient.quantite}` : ''}
+                    <button onclick="addToShoppingList('${escapedIngredient}', '${ingredient.quantite || '1'}')">Ajouter</button>
+                  </li>
+                `;
+              }).join('')}
+            </ul>          
+          </figcaption>
+        </figure>
+        
+        <h3 class="font-bold">Étapes:</h3>
+        <ol class="m-2">
+            ${recipe.etapes.map(step => `<li>${step}</li>`).join('')}
+        </ol>
+        <button onclick="" class="rounded">add to planning</button>
+      </div>
   `;
 
   openModal();

@@ -4,9 +4,6 @@ main{
   justify-content: space-between;
 }
 
-
-
-
 .viewRecipeButton{
   background-color: #F1F891;
   width: 80%;
@@ -22,18 +19,16 @@ main{
   width: 100%;
   height: auto;
   justify-content: center;
- 
-
 }
 
 #modalContent{
   background-color: white;
   max-height: 500px;
-  padding: 20px;
   width: 80%;
   max-width: 1000px;
+  flex-shrink: 0;
   overflow-y: auto;
-
   border-radius: 20px;
 }
+
 
