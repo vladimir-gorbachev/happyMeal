@@ -2,9 +2,8 @@ main{
   background-color: #F1F891;
   padding: 5vh 20px 10vh;
   justify-content: space-between;
-  min-height: 120vh;
-  flex-grow: 1;
 }
+
 
 
 
@@ -14,4 +13,27 @@ main{
   justify-content: flex-start;
   border-radius: 15px;
 }
+
+#modalOverlay{
+  position: fixed;
+  top: 15vh;
+  right: 0;
+  z-index: 1000;
+  width: 100%;
+  height: auto;
+  justify-content: center;
  
+
+}
+
+#modalContent{
+  background-color: white;
+  max-height: 500px;
+  padding: 20px;
+  width: 80%;
+  max-width: 1000px;
+  overflow-y: auto;
+
+  border-radius: 20px;
+}
+

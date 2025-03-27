@@ -29,6 +29,7 @@ function displayRecipes(page = 1) {
       recipeCard.innerHTML = `
           <div class="p-4 flex-grow flex flex-col">
               <h3 class="font-bold text-lg mb-2 line-clamp-2">${recipe.nom}</h3>
+              <img src="${recipe.image}" alt="${recipe.nom}" class="w-full h-40 object-cover rounded">
               <p class="text-gray-600 mb-1">${recipe.categorie}</p>
               <p class="text-gray-500 text-sm">⏱ ${recipe.temps_preparation}</p>
               <div class="mt-auto flex justify-between items-center">
@@ -91,7 +92,7 @@ function updatePaginationButtons() {
 
   for (let i = 1; i <= totalPages; i++) {
       const button = document.createElement('button');
-      button.innerText = i + ",";
+      button.innerText = i;
       button.className = "p-1"
       if (i === currentPage) button.style.fontWeight = "bold";
 
@@ -191,7 +192,7 @@ function removeFavorite(index) {
 
 function openModal() {
   const modal = document.getElementById("modalOverlay");
-  modal.style.display = "block";
+  modal.style.display = "flex";
 }
 
 function closeModal() {
