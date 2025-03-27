@@ -174,7 +174,7 @@ function viewFavoriteRecipe(index) {
       <ol>
           ${recipe.etapes.map(step => `<li>${step}</li>`).join('')}
       </ol>
-      <button onclick="" class="rounded" >  addtoplanning </button>
+      <button onclick="" class="rounded" >  add toplanning </button>
   `;
 
   openModal();
