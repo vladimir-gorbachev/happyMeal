@@ -2,6 +2,7 @@ main{
   background-color: #F1F891;
   padding: 5vh 20px 10vh;
   justify-content: space-between;
+  height: 100%;
 }
 
 .viewRecipeButton{
@@ -24,11 +25,12 @@ main{
 #modalContent{
   background-color: white;
   max-height: 500px;
-  width: 80%;
+  width: 95%;
   max-width: 1000px;
   flex-shrink: 0;
   overflow-y: auto;
   border-radius: 20px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1), 0 10px 25px rgba(0, 0, 0, 0.1);
+
+
 }
-
-
