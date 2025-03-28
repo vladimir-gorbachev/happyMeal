@@ -5,32 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="https://kit.fontawesome.com/ecde10fa93.js" crossorigin="anonymous"></script>
-
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script defer src="js/shopping_list.js"></script>
+    
     <script defer src="js/planning.js"></script>
+    <script defer src="js/header.js"></script>
+    <script defer src="js/footer.js"></script>
+    <script defer src="js/recipes.js"></script>
+    
+    <script src="https://cdn.tailwindcss.com" defer></script>
 
     <link rel="stylesheet" href="assets/styles/planning.css">
     <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon">
     <title>Autrement - planning des menus</title>
 </head>
 <body>
+    <header></header>
     <main>
         <h1>Planning des menus</h1>
 
         <section class="planning">
             <section class="menu">
-                <article class="day" id="monday"></article>
-                <article class="day" id="tuesday"></article>
-                <article class="day" id="wednesday"></article>
-                <article class="day" id="thursday"></article>
-                <article class="day" id="friday"></article>
-                <article class="day" id="saturday"></article>
-                <article class="day" id="sunday"></article>
+                <article class="day" id="monday">
+                    <h2>Lundi</h2>
+                    <article class="lunch"></article>
+                    <article class="diner"></article>
+                </article>
+                <article class="day" id="tuesday">
+                    <h2>Mardi</h2>
+                    <article class="lunch"></article>
+                    <article class="diner"></article>
+                </article>
+                <article class="day" id="wednesday">
+                    <h2>Mercredi</h2>
+                    <article class="lunch"></article>
+                    <article class="diner"></article>
+                </article>
+                <article class="day" id="thursday">
+                    <h2>Jeudi</h2>
+                    <article class="lunch"></article>
+                    <article class="diner"></article>
+                </article>
+                <article class="day" id="friday">
+                    <h2>Vendredi</h2>
+                    <article class="lunch"></article>
+                    <article class="diner"></article>
+                </article>
+                <article class="day" id="saturday">
+                    <h2>Samedi</h2>
+                    <article class="lunch"></article>
+                    <article class="diner"></article>
+                </article>
+                <article class="day" id="sunday">
+                    <h2>Dimanche</h2>
+                    <article class="lunch"></article>
+                    <article class="diner"></article>
+                </article>
             </section>
             
-            <section class="recipes"></section>
+            <section class="containerFavoriteRecipes"></section>
         </section>
     </main>
+    <footer></footer>
 </body>
 </html>
