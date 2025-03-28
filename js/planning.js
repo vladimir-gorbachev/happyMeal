@@ -59,15 +59,6 @@ document.addEventListener("DOMContentLoaded", function() {
         recipes.forEach(recipe => {
             recipe.draggable = true;
             recipe.addEventListener("dragstart", handleDragStart);
-
-            // Vérifie si la recette est dans le planning ou dans les favoris
-            if (planningContainer.contains(recipe)) {
-                recipe.classList.add("favoritesMenu"); // Applique la taille réduite dans le planning
-                recipe.classList.remove("favoritesScroll"); // Enlève la taille normale des favoris
-            } else if (containerFavoriteRecipes.contains(recipe)) {
-                recipe.classList.add("favoritesScroll"); // Applique la taille normale des favoris
-                recipe.classList.remove("favoritesMenu"); // Enlève la taille réduite du planning
-            }
         });
 
         document.querySelectorAll(".day").forEach(day => {
@@ -110,3 +101,48 @@ document.addEventListener("DOMContentLoaded", function() {
 
     enableDragAndDrop();
 });
+
+function saveMenu() {
+    let menu = {};
+
+    document.querySelectorAll('.day').forEach(day => {
+        let dayId = day.id;
+
+        menu[dayId] = {
+            lunch: day.querySelector('.lunch').innerHTML,
+            diner: day.querySelector('.diner').innerHTML
+        };
+    });
+
+    localStorage.setItem('menu', JSON.stringify(menu));
+    alert('Menu sauvegardé !');
+}
+
+
+function loadMenu() {
+    let savedMenu = localStorage.getItem('menu');
+
+    if (savedMenu) {
+        savedMenu = JSON.parse(savedMenu);
+
+        Object.keys(savedMenu).forEach(dayId => {
+            let dayElement = document.getElementById(dayId);
+            if (dayElement) {
+                dayElement.querySelector('.lunch').innerHTML = savedMenu[dayId].lunch;
+                dayElement.querySelector('.diner').innerHTML = savedMenu[dayId].diner;
+            }
+        });
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadMenu();
+    enableDragAndDrop();
+});
+
+
+function deleteList() {
+    localStorage.removeItem('menu');
+    document.querySelectorAll('.day article').forEach(meal => meal.innerHTML = '');
+}

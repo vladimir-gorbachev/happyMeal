@@ -29,9 +29,103 @@ h1 {
     padding: 24px 88px;
     width: 100%;
 
-    .menu {
+    .left {
         width: 60%;
         max-height: 100svh;
+
+        border: 2px solid red;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 32px;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        padding: 48px 0 16px 0;
+    
+        .btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgb(20, 20, 20);
+            border: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
+            cursor: pointer;
+            transition-duration: .3s;
+            overflow: hidden;
+            position: relative;
+        }
+          
+        .svgIcon {
+            width: 20px;
+            transition-duration: .3s;
+        }
+          
+        .svgIcon path {
+            fill: white;
+        }
+          
+        .btn:hover {
+            width: 140px;
+            border-radius: 50px;
+            transition-duration: .3s;
+            align-items: center;
+        }
+        
+        .trash:hover {
+            background-color: rgb(255, 69, 69);
+        }
+        
+        .pdf:hover {
+            background-color: rgb(47, 162, 5);
+        }
+
+        .save:hover {
+            background-color: rgb(5, 23, 162);
+        }
+          
+        .btn:hover .svgIcon {
+            width: 50px;
+            transition-duration: .3s;
+            transform: translateY(60%);
+        }
+          
+        .btn::before {
+            position: absolute;
+            top: -20px;
+            color: white;
+            transition-duration: .3s;
+            font-size: 2px;
+        }
+        
+        .trash::before {
+            content: "Supprimer le menu";
+        }
+        
+        .pdf::before {
+            content: "Générer le menu";
+        }
+
+        .save::before {
+            content: "Sauvegarder le menu";
+        }
+          
+        .btn:hover::before {
+            font-size: 13px;
+            opacity: 1;
+            transform: translateY(30px);
+            transition-duration: .3s;
+        }
+    }
+
+    .menu {
         border: 2px solid black;
         display: flex;
         flex-flow: row wrap;
@@ -98,22 +192,4 @@ h1 {
     width: 80%;
     justify-content: flex-start;
     border-radius: 15px;
-}
-
-/* Taille des recettes dans le container des favoris */
-.favorites.favoritesScroll {
-    width: 100%;
-    height: auto;
-    max-width: 400px; /* taille souhaitée pour les favoris */
-    max-height: 200px;
-    object-fit: cover; /* Assure que l'image de la recette soit bien adaptée */
-}
-
-/* Taille des recettes dans le planning des menus */
-.favorites.favoritesMenu {
-    width: 100%; /* 70% de la taille de base */
-    height: auto;
-    max-width: 200px; /* même max-width que dans le container des favoris */
-    max-height: 200px;
-    object-fit: cover; /* Assure que l'image soit bien proportionnée */
 }
