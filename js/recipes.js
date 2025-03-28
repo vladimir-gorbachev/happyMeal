@@ -34,7 +34,7 @@ function displayRecipes(page = 1) {
               <p class="text-gray-500 text-sm">⏱ ${recipe.temps_preparation}</p>
               <div class="mt-auto flex justify-between items-center">
                   <button onclick="viewRecipe(${start + index})" class="viewRecipeButton ">Voir la recette </button>
-                  <button onclick="toggleFavorite(${index})">♡</button>
+                  <button onclick="toggleFavorite(${index})"><i class="fa-regular fa-heart"></button>
               </div>
           </div>
       `;
@@ -70,7 +70,8 @@ function viewRecipe(index) {
               }).join('')}
             </ul>          
           </figcaption>
-          <button class="bg-red" onclick="toggleFavorite(${index})"><3</button>
+          
+          <button onclick="toggleFavorite(${index})"><i class="fa-regular fa-heart"></i></button>
         </figure>
         
         <h3 class="font-bold">Étapes:</h3>
