@@ -2,11 +2,8 @@ main{
   background-color: #F1F891;
   padding: 5vh 20px 10vh;
   justify-content: space-between;
-  min-height: 120vh;
-  flex-grow: 1;
+  height: 100%;
 }
-
-
 
 .viewRecipeButton{
   background-color: #F1F891;
@@ -14,4 +11,26 @@ main{
   justify-content: flex-start;
   border-radius: 15px;
 }
- 
+
+#modalOverlay{
+  position: fixed;
+  top: 15vh;
+  right: 0;
+  z-index: 1000;
+  width: 100%;
+  height: auto;
+  justify-content: center;
+}
+
+#modalContent{
+  background-color: white;
+  max-height: 500px;
+  width: 95%;
+  max-width: 1000px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  border-radius: 20px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1), 0 10px 25px rgba(0, 0, 0, 0.1);
+
+
+}
