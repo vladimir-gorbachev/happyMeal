@@ -1,83 +1,79 @@
-// HEARDER LOADER
-document.addEventListener('DOMContentLoaded', function() {
-    fetch('header.html')
-        .then(response => response.ok ? response.text() : Promise.reject('Header non chargé'))
-        .then(data => {
-            document.querySelector('header').outerHTML = data;
-            initSearchSystem();
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            initSearchSystem();
-        });
-});
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        const response = await fetch('header.html');
+        if (!response.ok) throw new Error('Header non chargé');
 
-
-function initSearchSystem() {
-    const searchInput = document.querySelector(".search-input");
-    const searchContainer = document.querySelector(".search-container");
-    
-    if (!searchInput || !searchContainer) return;
-
-    const resultsContainer = document.createElement("div");
-    resultsContainer.className = "search-results";
-    document.body.insertBefore(resultsContainer, document.body.firstChild);
-
-    let recipesData = [];
-    let searchTimer;
-
-    //RECIPES LOADER
-    fetch("data/recipes.json")
-        .then(response => response.ok ? response.json() : Promise.reject('Fichier JSON non trouvé'))
-        .then(data => {
-            recipesData = data.recettes;
-            console.log(`${recipesData.length} recettes chargées`);
-        })
-        .catch(error => {
-            console.error("Erreur:", error);
-            showErrorMessage("Impossible de charger les recettes");
-        });
-
-        const normalizeText = (text) => text?.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() || '';
-
-    const showErrorMessage = (message) => {
-        resultsContainer.innerHTML = `<div class="search-error">${message}</div>`;
-        resultsContainer.style.display = "block";
-    };
-
-    const performSearch = () => {
-    const searchTerm = normalizeText(searchInput.value.trim());
-    resultsContainer.innerHTML = "";
-    resultsContainer.style.display = "none";
-
-    if (searchTerm.length < 2) return;
-
-    if (!recipesData || !Array.isArray(recipesData)) {
-        showErrorMessage("Données de recettes non disponibles");
-        return;
+        const data = await response.text();
+        document.querySelector('header').outerHTML = data;
+    } catch (error) {
+        console.error('Erreur:', error);
     }
 
-    const results = recipesData.filter(recipe => {
-        if (!recipe || typeof recipe !== 'object') return false;
+    initSearchSystem();
+});
 
-        const nom = normalizeText(recipe.nom);
-        if (nom.includes(searchTerm)) return true;
+async function initSearchSystem() {
+    const searchInput = document.querySelector(".search-input");
+    const searchContainer = document.querySelector(".search-container");
+    const resultsContainer = document.querySelector(".search-results");
 
-        return recipe.ingredients?.some(ingredient => normalizeText(ingredient.nom).includes(searchTerm));
-    });
+    if (!searchInput || !searchContainer || !resultsContainer) return;
 
-    displayResults(results);
-};
+    let recipesData = [];
+    let normalizedRecipes = [];
+    let searchTimer;
+    const searchCache = {};
 
-    const displayResults = (results) => {
-        if (results.length === 0) {
-            resultsContainer.innerHTML = `
-                <div class="no-results">
-                    Aucune recette trouvée pour "${searchInput.value}"
-                </div>
-            `;
-        } else {
-            resultsContainer.innerHTML = results.map(recipe => `
+    async function loadRecipes() {
+        try {
+            const response = await fetch("data/recipes.json");
+            if (!response.ok) throw new Error("Fichier JSON non trouvé");
+
+            const data = await response.json();
+            console.log(`${data.recettes.length} recettes chargées`);
+            return data.recettes;
+        } catch (error) {
+            console.error("Erreur:", error);
+            return [];
+        }
+    }
+
+    const normalizeText = (text) => text?.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() || '';
+
+    recipesData = await loadRecipes();
+    normalizedRecipes = recipesData.map(recipe => ({
+        original: recipe,
+        nom: normalizeText(recipe.nom),
+        ingredients: recipe.ingredients.map(ing => normalizeText(ing.nom))
+    }));
+
+    function performSearch() {
+        const searchTerm = normalizeText(searchInput.value.trim());
+        if (searchTerm.length < 2) {
+            resultsContainer.style.display = "none";
+            return;
+        }
+
+        if (searchCache[searchTerm]) {
+            displayResults(searchCache[searchTerm]);
+            return;
+        }
+
+        const results = normalizedRecipes
+            .filter(recipe =>
+                recipe.nom.includes(searchTerm) ||
+                recipe.ingredients.some(ing => ing.includes(searchTerm))
+            )
+            .map(r => r.original);
+
+        searchCache[searchTerm] = results;
+        displayResults(results);
+    }
+
+    function displayResults(results) {
+        resultsContainer.innerHTML = results.length === 0
+            ? `<div class="no-results">Aucune recette trouvée pour "${searchInput.value}"</div>`
+            : results.map(recipe => `
                 <div class="recipe-result">
                     <h3>${recipe.nom}</h3>
                     <div class="recipe-meta">
@@ -89,10 +85,9 @@ function initSearchSystem() {
                     </div>
                 </div>
             `).join('');
-        }
-        resultsContainer.style.display = "block";
-    };
 
+        resultsContainer.style.display = "block";
+    }
 
     searchInput.addEventListener('input', () => {
         clearTimeout(searchTimer);
@@ -100,19 +95,15 @@ function initSearchSystem() {
     });
 
     searchInput.addEventListener('keypress', (e) => {
-        if (e.key === "Enter") {
-            const searchTerm = searchInput.value.trim();
-            if (searchTerm.length > 1) {
-                window.location.href = `search_results.html?query=${encodeURIComponent(searchTerm)}`;
-            }
+        if (e.key === "Enter" && searchInput.value.trim().length > 1) {
+            window.location.href = `search_results.html?query=${encodeURIComponent(searchInput.value.trim())}`;
         }
     });
-    
+
     document.addEventListener('click', (e) => {
         if (!searchContainer.contains(e.target) && !resultsContainer.contains(e.target)) {
-            searchContainer.classList.remove('expanded');
-            searchInput.value = "";
             resultsContainer.style.display = "none";
+            searchInput.value = "";
         }
     });
 }
