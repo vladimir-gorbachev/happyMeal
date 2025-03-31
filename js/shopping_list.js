@@ -33,7 +33,7 @@ function parseQuantity(quantityString) {
 let shoppingList = JSON.parse(localStorage.getItem("shoppingList"));
 let listContainer = document.querySelector(".ingredients");
 
-if (shoppingList && shoppingList.length > 0) {
+if (listContainer && shoppingList && shoppingList.length > 0) {
     shoppingList.forEach(item => {
         
         let li = document.createElement("li");
