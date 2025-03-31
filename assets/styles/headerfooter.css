@@ -1,7 +1,7 @@
 :root {
     --font-title: "Zen Loop", cursive;
     --font-family: "Albert Sans", sans-serif;
-    --color-1: #F1F891;
+    --color-1: #fafaf6;
     --color-2: #BC2010;
     --color-3: #750204;
     --color-4: #fff;
@@ -51,25 +51,26 @@ body {
     width: clamp(240px, 90%, 260px);
     max-width: 100%;
     padding: 1em;
-    border: none;
+    border: #a0a0a0 1px solid;
     border-radius: 12px;
     outline: none;
 }
 
 /* RÉSULTATS SOUS LE HEADER */
+
 .search-results {
-    position: absolute;
-    top:20vw;
-    left: 0;
-    
-    background: white;
-    border: 1px solid #ddd;
-    height: auto;
-    overflow-y: auto;
-    display: none;
-    padding: 10px;
-    z-index: 1000;
-}
+        position: absolute;
+        top:18vw;
+        right:0;
+        background: white;
+        height: auto;
+        overflow-y: auto;
+        display: none;
+        padding: 10px;
+        z-index: 2;
+        border: 1px solid #cacaca ;
+        border-radius: 15px;
+    }
 
 .recipe-result {
     border-bottom: 1px solid #eee;
@@ -150,21 +151,54 @@ body {
     }
 
     .search-input {
-        width: 19vw;
-        height: 2em;
+        height: 1em;
         font-size: 15px;
     }
 
     .search-results {
-        position: absolute;
-        top:8vw;
-        right:0;
-        background: white;
+        top:6vw;
+        margin: 15px
+    }
+
+
+    footer {
+    background-color: var(--color-2);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 15vw;
+    text-align: center;
+    align-content: center;
+    }
+
+    .footer-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .footer-nav a {
+        text-decoration: none;
+    }
+
+    .footer-nav svg {
+        width: 40px;
         height: auto;
-        overflow-y: auto;
-        display: none;
-        padding: 10px;
-        z-index: 2;
+        transition: transform 0.3s;
+    }
+
+    .footer-nav svg:hover {
+        transform: scale(1.2);
     }
 }
 
+@media (min-width: 768px) {
+    footer{
+    width: 100%;
+    height: 5px;
+    }
+
+    .footer-nav{
+        display: none;
+    }
+}
