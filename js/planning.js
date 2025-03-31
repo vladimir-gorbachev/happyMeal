@@ -1,148 +1,182 @@
-let favoriteRecipes = localStorage.getItem("favoriteRecipes");
+const meals = ["Midi", "Soir"];
+let favorites = JSON.parse(localStorage.getItem("favoriteRecipes")) || [];
 
-if (favoriteRecipes) {
-    favoriteRecipes = JSON.parse(favoriteRecipes);
-
-    favoriteRecipes.forEach((recipe, index) => {
-        let containerFavoriteRecipes = document.querySelector(".containerFavoriteRecipes");
-        let recipeCard = document.createElement("article");
-        recipeCard.className = "favorites bg-white rounded-lg shadow-md overflow-hidden w-full min-h-[400px] flex flex-col";
-        containerFavoriteRecipes.appendChild(recipeCard);
-
-        let div = document.createElement("div");
-        div.className = "p-4 flex-grow flex flex-col";
-
-        let h2 = document.createElement("h2");
-        h2.className = "font-bold text-lg mb-2 pb-4 line-clamp-2";
-        h2.innerHTML = recipe.nom;
-
-        let img = document.createElement("img");
-        img.className = "h-60 object-cover rounded";
-        img.src = recipe.image;
-        img.alt = recipe.nom;
-
-        let categorie = document.createElement("p");
-        categorie.className = "text-gray-600 mb-1";
-        categorie.innerHTML = recipe.categorie;
-
-        let time = document.createElement("p");
-        time.className = "text-gray-500 text-sm";
-        time.innerHTML = `⏱ + ${recipe.temps_preparation}`;
-
-        let divBtn = document.createElement("div");
-        divBtn.className = "mt-auto flex justify-between items-center";
-        let btnView = document.createElement("button");
-        btnView.className = "viewRecipeButton";
-        btnView.innerHTML = "Voir la recette";
-        btnView.onclick = () => viewRecipe(index);
-        let btnFavorite = document.createElement("button");
-        btnFavorite.innerHTML = '<i class="fa-solid fa-heart"></i>';
-        btnFavorite.onclick = () => toggleFavorite(index);
-        divBtn.appendChild(btnView);
-        divBtn.appendChild(btnFavorite);
-
-        div.appendChild(h2);
-        div.appendChild(img);
-        div.appendChild(categorie);
-        div.appendChild(time);
-        div.appendChild(divBtn);
-        recipeCard.appendChild(div);
-    });
+// Get Monday of current week
+function getMondayOfWeek(date) {
+    let day = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    let difference = date.getDate() - day + (day == 0 ? -6 : 1); // If today is Sunday, we go back 6 days to get Monday.
+    date.setDate(difference);
+    date.setHours(0, 0, 0, 0); // Reset the time to keep only the date
+    return date;
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    let recipes = document.querySelectorAll(".favorites");
-    let containerFavoriteRecipes = document.querySelector(".containerFavoriteRecipes");
-    let planningContainer = document.querySelector(".menu");
+// Format a date in the format "dd/mm/yyyy"
+function formatDate(date) {
+    let day = ("0" + date.getDate()).slice(-2);
+    let month = ("0" + (date.getMonth() + 1)).slice(-2);
+    let year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
 
-    function enableDragAndDrop() {
-        recipes.forEach(recipe => {
-            recipe.draggable = true;
-            recipe.addEventListener("dragstart", handleDragStart);
-        });
-
-        document.querySelectorAll(".day").forEach(day => {
-            let lunch = day.querySelector(".lunch");
-            let diner = day.querySelector(".diner");
-
-            lunch.addEventListener("dragover", handleDragOver);
-            lunch.addEventListener("drop", handleDrop);
-
-            diner.addEventListener("dragover", handleDragOver);
-            diner.addEventListener("drop", handleDrop);
-        });
-
-        containerFavoriteRecipes.addEventListener("dragover", handleDragOver);
-        containerFavoriteRecipes.addEventListener("drop", handleDrop);
+// Calculate the current week from a given date
+function calculateWeek(date) {
+    let mondayOfWeek = getMondayOfWeek(new Date(date));
+    let daysOfWeek = [];
+    for (let i = 0; i < 7; i++) {
+        let currentDay = new Date(mondayOfWeek);
+        currentDay.setDate(mondayOfWeek.getDate() + i);
+        daysOfWeek.push(formatDate(currentDay));
     }
+    return daysOfWeek;
+}
 
-    let draggedRecipe = null;
+// Load schedule from localStorage
+let planning = JSON.parse(localStorage.getItem("mealPlanning")) || {};
+let currentWeekStartDate = new Date();
 
-    function handleDragStart(event) {
-        draggedRecipe = event.target;
-    }
+// Show week at top of page
+function displayWeek(weekDays) {
+    let weekDisplay = document.getElementById("week-display");
+    weekDisplay.innerHTML = `Semaine du ${weekDays[0]} au ${weekDays[6]}`;
+}
 
-    function handleDragOver(event) {
-        event.preventDefault();
-    }
+// Show the schedule
+const renderPlanning = (weekDays) => {
+    const container = document.getElementById("planning-container");
+    container.innerHTML = ""; // Reset display
 
-    function handleDrop(event) {
-        event.preventDefault();
+    weekDays.forEach((date, index) => {
+        const day = new Date(currentWeekStartDate);
+        day.setDate(currentWeekStartDate.getDate() + index);
+        const dayName = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"][index];
 
-        if (draggedRecipe) {
-            if (event.target.classList.contains("lunch") || event.target.classList.contains("diner")) {
-                event.target.appendChild(draggedRecipe);
-            } else if (event.target === containerFavoriteRecipes) {
-                containerFavoriteRecipes.appendChild(draggedRecipe);
+        const card = document.createElement("div");
+        card.classList.add("bg-white", "p-4", "rounded-lg", "shadow-lg", "border", "border-gray-200");
+
+        const dayTitle = document.createElement("h3");
+        dayTitle.classList.add("text-xl", "font-semibold", "text-center");
+        dayTitle.textContent = `${dayName} (${formatDate(day)})`;
+        card.appendChild(dayTitle);
+
+        meals.forEach((meal) => {
+            const mealSelect = document.createElement("select");
+            mealSelect.setAttribute("data-day", date);
+            mealSelect.setAttribute("data-meal", meal);
+            mealSelect.classList.add("mt-4", "p-2", "w-full", "border", "rounded-md", "border-gray-300", "bg-gray-50", "text-gray-400");
+
+            // Add options for favorite recipes
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.textContent = `Sélectionner une recette pour le ${meal}`;
+            mealSelect.appendChild(defaultOption);
+
+            favorites.forEach((recipe) => {
+                const option = document.createElement("option");
+                option.value = recipe.nom;
+                option.textContent = recipe.nom;
+                mealSelect.appendChild(option);
+            });
+
+            // Pre-select the recipe if it is already in the schedule
+            if (planning[date] && planning[date][meal]) {
+                mealSelect.value = planning[date][meal];
             }
-            draggedRecipe = null;
+
+            // Manage recipe selection
+            mealSelect.addEventListener("change", (e) => {
+                const selectedRecipe = e.target.value;
+                if (!planning[date]) {
+                    planning[date] = {};
+                }
+                planning[date][meal] = selectedRecipe;
+                localStorage.setItem("mealPlanning", JSON.stringify(planning));
+                renderPlanning(weekDays); // Re-render after modification
+            });
+
+            card.appendChild(mealSelect);
+
+            // Show selected recipe
+            if (planning[date] && planning[date][meal]) {
+                mealSelect.classList.add("text-gray-800");
+            }
+        });
+
+        container.appendChild(card);
+    });
+};
+
+// Reset the visible week schedule
+document.getElementById("reset-planning-btn").addEventListener("click", () => {
+    const weekDays = calculateWeek(currentWeekStartDate); // Get the days of the current week
+    weekDays.forEach((date) => {
+        // Delete meals for each day of the week visible
+        if (planning[date]) {
+            delete planning[date]; // Delete only this week's meals
         }
-    }
-
-    enableDragAndDrop();
+    });
+    localStorage.setItem("mealPlanning", JSON.stringify(planning)); // Save changes to localStorage
+    renderPlanning(weekDays); // Re-render after reset
 });
 
-function saveMenu() {
-    let menu = {};
+// Navigation between weeks
+document.getElementById("previous-week-btn").addEventListener("click", () => {
+    currentWeekStartDate.setDate(currentWeekStartDate.getDate() - 7); // Go back one week
+    const weekDays = calculateWeek(currentWeekStartDate);
+    displayWeek(weekDays);
+    renderPlanning(weekDays);
+});
 
-    document.querySelectorAll('.day').forEach(day => {
-        let dayId = day.id;
+document.getElementById("next-week-btn").addEventListener("click", () => {
+    currentWeekStartDate.setDate(currentWeekStartDate.getDate() + 7); // Move forward one week
+    const weekDays = calculateWeek(currentWeekStartDate);
+    displayWeek(weekDays);
+    renderPlanning(weekDays);
+});
 
-        menu[dayId] = {
-            lunch: day.querySelector('.lunch').innerHTML,
-            diner: day.querySelector('.diner').innerHTML
-        };
+// Initialize the display
+const weekDays = calculateWeek(currentWeekStartDate);
+displayWeek(weekDays);
+renderPlanning(weekDays);
+
+function generatePDF(weekDays, planning) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: "landscape" });
+
+    doc.setFontSize(18);
+    doc.text("Planning des repas de la semaine", 10, 10);
+    doc.setFontSize(12);
+
+    const startX = 10;
+    const startY = 20;
+    const cellWidth = 50;
+    const cellHeight = 15;
+
+    // En-tête du tableau
+    doc.setFont(undefined, "bold");
+    doc.rect(startX, startY, cellWidth, cellHeight); // Case vide en haut à gauche
+    doc.text("Jour", startX + 15, startY + 10);
+    doc.rect(startX + cellWidth, startY, cellWidth, cellHeight);
+    doc.text("Midi", startX + cellWidth + 15, startY + 10);
+    doc.rect(startX + cellWidth * 2, startY, cellWidth, cellHeight);
+    doc.text("Soir", startX + cellWidth * 2 + 15, startY + 10);
+
+    let yPosition = startY + cellHeight;
+    doc.setFont(undefined, "normal");
+
+    weekDays.forEach((date, index) => {
+        const dayName = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"][index];
+        
+        doc.rect(startX, yPosition, cellWidth, cellHeight);
+        doc.text(`${dayName} (${date})`, startX + 5, yPosition + 10);
+        
+        doc.rect(startX + cellWidth, yPosition, cellWidth, cellHeight);
+        doc.text(planning[date]?.["Midi"] || "-", startX + cellWidth + 5, yPosition + 10);
+        
+        doc.rect(startX + cellWidth * 2, yPosition, cellWidth, cellHeight);
+        doc.text(planning[date]?.["Soir"] || "-", startX + cellWidth * 2 + 5, yPosition + 10);
+        
+        yPosition += cellHeight;
     });
 
-    localStorage.setItem('menu', JSON.stringify(menu));
-    alert('Menu sauvegardé !');
-}
-
-
-function loadMenu() {
-    let savedMenu = localStorage.getItem('menu');
-
-    if (savedMenu) {
-        savedMenu = JSON.parse(savedMenu);
-
-        Object.keys(savedMenu).forEach(dayId => {
-            let dayElement = document.getElementById(dayId);
-            if (dayElement) {
-                dayElement.querySelector('.lunch').innerHTML = savedMenu[dayId].lunch;
-                dayElement.querySelector('.diner').innerHTML = savedMenu[dayId].diner;
-            }
-        });
-    }
-}
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    loadMenu();
-    enableDragAndDrop();
-});
-
-
-function deleteList() {
-    localStorage.removeItem('menu');
-    document.querySelectorAll('.day article').forEach(meal => meal.innerHTML = '');
+    doc.save("Planning_Repas.pdf");
 }
