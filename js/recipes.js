@@ -60,6 +60,7 @@ function createFavButton(recipe, index) {
     [
       'favorite-button', // classe commune pour tous les boutons favoris
       'max-w-[37px]',
+      
       'top-5',
       'rounded-full',
       'border',
@@ -87,6 +88,29 @@ function createFavButton(recipe, index) {
 
   return favButton;
 }
+
+function createButtonsContainer(...buttons) {
+  const container = createElement('div', ['flex','justify-between']);
+  container.append(...buttons);
+  return container;
+}
+
+function updatePaginationButtons() {
+  const pagination = document.getElementById('pagination');
+  pagination.className = "flex justify-center";
+  pagination.innerHTML = '';
+
+  const totalPages = Math.ceil(allRecipes.length / recipesPerPage);
+
+  for (let i = 1; i <= totalPages; i++) {
+    const button = createElement('button', ['p-1'], {}, []);
+    button.textContent = i;
+    if (i === currentPage) button.style.fontWeight = "bold";
+    button.addEventListener('click', () => displayRecipes(i));
+    pagination.appendChild(button);
+  }
+}
+
 
 function createRecipeCard(recipe, index) {
   const card = createElement('article', [
@@ -125,28 +149,6 @@ function createRecipeCard(recipe, index) {
   content.append(title, img, category, time, buttonsContainer);
   card.appendChild(content);
   return card;
-}
-
-function createButtonsContainer(...buttons) {
-  const container = createElement('div', ['flex','justify-between']);
-  container.append(...buttons);
-  return container;
-}
-
-function updatePaginationButtons() {
-  const pagination = document.getElementById('pagination');
-  pagination.className = "flex justify-center";
-  pagination.innerHTML = '';
-
-  const totalPages = Math.ceil(allRecipes.length / recipesPerPage);
-
-  for (let i = 1; i <= totalPages; i++) {
-    const button = createElement('button', ['p-1'], {}, []);
-    button.textContent = i;
-    if (i === currentPage) button.style.fontWeight = "bold";
-    button.addEventListener('click', () => displayRecipes(i));
-    pagination.appendChild(button);
-  }
 }
 
 function toggleFavorite(index) {
