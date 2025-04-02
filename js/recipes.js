@@ -27,6 +27,22 @@ async function initRecipesPage() {
   setupGlobalListeners();
 }
 
+function updatePaginationButtons() {
+  const pagination = document.getElementById('pagination');
+  pagination.className = "flex justify-center";
+  pagination.innerHTML = '';
+
+  const totalPages = Math.ceil(allRecipes.length / recipesPerPage);
+
+  for (let i = 1; i <= totalPages; i++) {
+    const button = createElement('button', ['p-1'], {}, []);
+    button.textContent = i;
+    if (i === currentPage) button.style.fontWeight = "bold";
+    button.addEventListener('click', () => displayRecipes(i));
+    pagination.appendChild(button);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", initRecipesPage);
 
 function displayRecipes(page = 1) {
@@ -49,8 +65,9 @@ function displayRecipes(page = 1) {
 
 function createFavButton(recipe, index) {
   // Récupérer les favoris depuis localStorage
-  const favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
-  const isFavorite = favorites.find(fav => fav.nom === recipe.nom);
+  const favorites = (JSON.parse(localStorage.getItem('favoriteRecipes')) || [])
+  .filter(fav => fav && typeof fav === 'object' && fav?.nom);
+  const isFavorite = favorites.find(fav => fav?.nom === recipe.nom);
   // Choisir la couleur du fill : rouge si favorite, sinon currentColor (ou noir, par exemple)
   const fillColor = isFavorite ? 'red' : '#D3D3D3';
 
@@ -95,23 +112,6 @@ function createButtonsContainer(...buttons) {
   return container;
 }
 
-function updatePaginationButtons() {
-  const pagination = document.getElementById('pagination');
-  pagination.className = "flex justify-center";
-  pagination.innerHTML = '';
-
-  const totalPages = Math.ceil(allRecipes.length / recipesPerPage);
-
-  for (let i = 1; i <= totalPages; i++) {
-    const button = createElement('button', ['p-1'], {}, []);
-    button.textContent = i;
-    if (i === currentPage) button.style.fontWeight = "bold";
-    button.addEventListener('click', () => displayRecipes(i));
-    pagination.appendChild(button);
-  }
-}
-
-
 function createRecipeCard(recipe, index) {
   const card = createElement('article', [
     'bg-white', 'rounded-lg', 'shadow-md', 'overflow-hidden', 
@@ -155,10 +155,9 @@ function toggleFavorite(index) {
   const favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
   const recipe = allRecipes[index];
 
-  // Sélectionner tous les boutons favoris pour cette recette via la classe et le data attribute
   const favButtons = document.querySelectorAll(`.favorite-button[data-recipe-index="${index}"]`);
   
-  const exists = favorites.find(fav => fav.nom === recipe.nom);
+  const exists = favorites.find(fav => fav?.nom === recipe.nom);
   if (exists) {
     // Si la recette est déjà favorite, on la retire
     favorites.splice(favorites.indexOf(exists), 1);

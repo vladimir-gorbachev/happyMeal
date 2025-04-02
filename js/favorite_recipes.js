@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", initFavoriteRecipes);
 
 function initFavoriteRecipes() {
   let favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
+  // On filtre pour ne garder que les recettes non nulles
+  favorites = favorites.filter(recipe => recipe !== null);
   displayFavoriteRecipes(favorites);
 }
 
@@ -14,10 +16,59 @@ function createElement(tag, classes = [], attributes = {}, children = []) {
   return element;
 }
 
+const recipesPerPage = 9;
+let currentPage = 1;
+let allRecipes = [];
+
+function updatePaginationButtons() {
+  const pagination = document.getElementById('pagination');
+  pagination.className = "flex justify-center";
+  pagination.innerHTML = '';
+
+  const totalPages = Math.ceil(allRecipes.length / recipesPerPage);
+
+  for (let i = 1; i <= totalPages; i++) {
+    const button = createElement('button', ['p-1'], {}, []);
+    button.textContent = i;
+    if (i === currentPage) button.style.fontWeight = "bold";
+    button.addEventListener('click', () => displayRecipes(i));
+    pagination.appendChild(button);
+  }
+}
+
+
+function toggleFavorite(index) {
+  // On récupère les favoris et on s'assure d'avoir un tableau valide
+  let favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
+  
+  // Dans la page des favoris, l'index correspond directement à l'élément du tableau
+  const recipe = favorites[index];
+  if (!recipe) return;
+  
+  // Suppression de la recette favorite
+  favorites.splice(index, 1);
+  
+  // Mise à jour de l'état du bouton (si nécessaire)
+  const favButtons = document.querySelectorAll(`.favorite-button[data-recipe-index="${index}"]`);
+  favButtons.forEach(button => {
+    const svg = button.querySelector('svg');
+    if (svg) {
+      svg.setAttribute('fill', 'currentColor');
+    }
+  });
+  
+  // Sauvegarde du nouveau tableau dans le localStorage
+  localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
+  
+  // Mise à jour de l'affichage
+  displayFavoriteRecipes(favorites);
+}
+
+
 function createFavButton(recipe, index) {
   // Récupérer les favoris depuis localStorage
   const favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
-  const isFavorite = favorites.find(fav => fav.nom === recipe.nom);
+  const isFavorite = favorites.find(fav => fav?.nom === recipe.nom);
   // Choisir la couleur du fill : rouge si favorite, sinon currentColor (ou noir, par exemple)
   const fillColor = isFavorite ? 'red' : '#D3D3D3';
 
@@ -54,39 +105,6 @@ function createFavButton(recipe, index) {
   favButton.addEventListener('click', () => toggleFavorite(index));
 
   return favButton;
-}
-
-function toggleFavorite(index) {
-  const favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
-  const recipe = allRecipes[index];
-
-  // Sélectionner tous les boutons favoris pour cette recette via la classe et le data attribute
-  const favButtons = document.querySelectorAll(`.favorite-button[data-recipe-index="${index}"]`);
-  
-  const exists = favorites.find(fav => fav.nom === recipe.nom);
-  if (exists) {
-    // Si la recette est déjà favorite, on la retire
-    favorites.splice(favorites.indexOf(exists), 1);
-    // Remettre le fill du SVG à sa valeur par défaut
-    favButtons.forEach(button => {
-      const svg = button.querySelector('svg');
-      if (svg) {
-        svg.setAttribute('fill', 'currentColor');
-      }
-    });
-  } else {
-    // Sinon, on ajoute la recette aux favoris
-    favorites.push(recipe);
-    // Changer le fill du SVG en rouge
-    favButtons.forEach(button => {
-      const svg = button.querySelector('svg');
-      if (svg) {
-        svg.setAttribute('fill', 'red');
-      }
-    });
-  }
-  
-  localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
 }
 
 function createButtonsContainer(...buttons) {
@@ -147,11 +165,12 @@ function displayFavoriteRecipes(favorites) {
   }
 
   favorites.forEach((recipe, index) => {
-    const card = createFavoriteRecipeCard(recipe, index);
-    container.appendChild(card);
+    if (recipe) {  // Vérification si la recette n'est pas nulle
+      const card = createFavoriteRecipeCard(recipe, index);
+      container.appendChild(card);
+    }
   });
 }
-
 function viewFavoriteRecipe(index) {
   const favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
   const recipe = favorites[index];
@@ -222,6 +241,11 @@ function createModalContent(recipe, index) {
     ingredientsList.appendChild(li);
   });
 
+  
+  const favButton = createFavButton(recipe, index);
+  // Pour la modale, on peut ajuster la position du bouton
+  favButton.classList.add('absolute', 'top-5', 'right-[45px]');
+
   // Assemblage figcaption
   figCaption.append(category, time, ingredientsTitle, ingredientsList);
 
@@ -242,6 +266,7 @@ function createModalContent(recipe, index) {
   figure.append(img, figCaption);
   content.append(
     title, 
+    favButton,
     figure, 
     stepsTitle, 
     stepsList,
