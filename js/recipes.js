@@ -120,12 +120,13 @@ function createRecipeCard(recipe, index) {
 
   const content = createElement('div', ['p-4', 'flex-grow', 'flex', 'flex-col']);
   
+  
   // Titre
   const title = createElement('h2', ['font-bold', 'text-lg', 'mb-2', 'pb-2', 'line-clamp-2']);
   title.textContent = recipe.nom;
 
   // Image
-  const img = createElement('img', ['h-60', 'object-cover', 'rounded' ,'pt-6']);
+  const img = createElement('img', ['h-60', 'object-cover', 'rounded-xl' ,'pt-6']);
   img.src = recipe.image;
   img.alt = recipe.nom;
 
@@ -148,6 +149,9 @@ function createRecipeCard(recipe, index) {
   // Assemblage final
   content.append(title, img, category, time, buttonsContainer);
   card.appendChild(content);
+
+  card.addEventListener('click', () => viewRecipe(index));
+
   return card;
 }
 
@@ -203,16 +207,16 @@ function createModalContent(recipe, index) {
   title.textContent = recipe.nom;
 
   // Figure principale
-  const figure = createElement('figure', ['flex', 'flex-wrap']);
+  const figure = createElement('figure', ['flex', 'flex-wrap', 'justify-around']);
 
   // Image
-  const img = createElement('img', ['max-w-[400px]', 'max-h-[400px]', 'object-cover', 'rounded', 'p-4']);
+  const img = createElement('img', ['max-w-[550px]', 'max-h-[400px]', 'rounded', 'object-cover', 'p-4', 'flex', 'flex-shrink', 'flex-grow']);
   img.src = recipe.image;
   img.alt = recipe.nom;
 
   // Légende
   const figCaption = createElement('figcaption');
-  figCaption.classList = "pl-3 max-w-[550px] flex justify-space-between flex-wrap";
+  figCaption.classList = "pl-3 pr-3 max-w-[450px] flex justify-space-between flex-wrap flex-grow";
 
   // Catégorie
   const category = createElement('h3', ['pb-4']);
@@ -257,7 +261,7 @@ function createModalContent(recipe, index) {
   // Bouton favoris créé via la fonction externalisée
   const favButton = createFavButton(recipe, index);
   // Pour la modale, on peut ajuster la position du bouton
-  favButton.classList.add('absolute', 'top-5', 'right-[45px]');
+  favButton.classList.add('absolute', 'top-3', 'right-[45px]');
 
   // Assemblage figcaption
   figCaption.append(category, time, ingredientsTitle, ingredientsList);
