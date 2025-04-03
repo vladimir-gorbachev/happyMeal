@@ -20,6 +20,10 @@ function addToShoppingList(ingredient, quantity = "1") {
 
 // Display shopping list
 function parseQuantity(quantityString) {
+    if (typeof quantityString !== "string") {
+        quantityString = String(quantityString);
+    }
+
     let match = quantityString.match(/^([\d.]+)(\D*)$/);
     if (match) {
         return {
@@ -99,7 +103,7 @@ ingredients.forEach(ingredient => {
     function updateQuantityInLocalStorage() {
         let shoppingList = JSON.parse(localStorage.getItem("shoppingList")) || [];
 
-        let ingredientToUpdate = shoppingList.find(item => item.name === ingredientName);
+        let ingredientToUpdate = shoppingList.find(item => item.ingredient === ingredientName);
         if (ingredientToUpdate) {
             ingredientToUpdate.quantity = Number(quantity.value);
             localStorage.setItem("shoppingList", JSON.stringify(shoppingList));
@@ -124,7 +128,7 @@ function deleteItem() {
     const ingredientName = this.closest(".ingredient").querySelector(".name").textContent;
     let shoppingList = JSON.parse(localStorage.getItem("shoppingList")) || [];
 
-    shoppingList = shoppingList.filter(item => item.name !== ingredientName);
+    shoppingList = shoppingList.filter(item => item.ingredient !== ingredientName);
     localStorage.setItem("shoppingList", JSON.stringify(shoppingList));
 
     this.closest(".ingredient").remove();
@@ -159,3 +163,5 @@ function generatePDF() {
         pdf.remove();
     });
 }
+
+console.log(localStorage.getItem("shoppingList"));
