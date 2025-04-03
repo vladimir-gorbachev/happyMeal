@@ -29,7 +29,6 @@ async function initRecipesPage() {
 
 function updatePaginationButtons() {
   const pagination = document.getElementById('pagination');
-  pagination.className = "flex justify-center";
   pagination.innerHTML = '';
 
   const totalPages = Math.ceil(allRecipes.length / recipesPerPage);
@@ -47,6 +46,7 @@ document.addEventListener("DOMContentLoaded", initRecipesPage);
 
 function displayRecipes(page = 1) {
   const container = document.getElementById('recipesContainer');
+  container.className = "recipes-container";
   container.innerHTML = '';
 
   currentPage = page;
@@ -112,32 +112,28 @@ function createButtonsContainer(...buttons) {
 }
 
 function createRecipeCard(recipe, index) {
-  const card = createElement('article', [
-    'bg-white', 'rounded-lg', 'shadow-md', 'overflow-hidden', 
-    'w-full', 'md:w-[calc(33.333%-1rem)]', 'min-h-[400px]', 'flex', 'flex-col'
-  ]);
+  const card = createElement('article', ['recipe-card']);
 
-  const content = createElement('div', ['p-4', 'flex-grow', 'flex', 'flex-col']);
-  
+  const content = createElement('div', ['recipe-card-content']);
   
   // Titre
-  const title = createElement('h2');
+  const title = createElement('h2', ['recipe-title']);
   title.textContent = recipe.nom;
 
   // Image
-  const img = createElement('img', ['h-60', 'object-cover', 'rounded-xl' ,'pt-6']);
+  const img = createElement('img', ['recipe-image']);
   img.src = recipe.image;
   img.alt = recipe.nom;
 
   // Métadonnées
-  const category = createElement('p', ['category']);
+  const category = createElement('p', ['recipe-category']);
   category.textContent = recipe.categorie;
 
-  const time = createElement('p', ['time']);
+  const time = createElement('p', ['recipe-time']);
   time.textContent = `⏱ ${recipe.temps_preparation}`;
 
   // Boutons
-  const viewButton = createElement('button', ['viewRecipeButton']);
+  const viewButton = createElement('button', ['view-recipe-button']);
   viewButton.textContent = 'Voir la recette';
   viewButton.addEventListener('click', () => viewRecipe(index));
 
@@ -149,7 +145,7 @@ function createRecipeCard(recipe, index) {
   content.append(title, img, category, time, buttonsContainer);
   card.appendChild(content);
 
-  card.addEventListener('click', () => viewRecipe(index));
+  img.addEventListener('click', () => viewRecipe(index));
 
   return card;
 }
@@ -206,7 +202,7 @@ function createModalContent(recipe, index) {
   title.textContent = recipe.nom;
 
   // Figure principale
-  const figure = createElement('figure', ['flex', 'flex-wrap', 'justify-around']);
+  const figure = createElement('figure', ['flex', 'flex-wrap', 'justify-between']);
 
   // Image
   const img = createElement('img', ['max-w-[550px]', 'max-h-[400px]', 'rounded', 'object-cover', 'p-4', 'flex', 'flex-shrink', 'flex-grow']);
@@ -218,7 +214,7 @@ function createModalContent(recipe, index) {
   figCaption.classList = "pl-3 pr-3 max-w-[450px] flex justify-space-between flex-wrap flex-grow";
 
   // Catégorie
-  const category = createElement('h3');
+  const category = createElement('h3',['w-full']);
   category.innerHTML = `<span style="font-weight:bold">Catégorie</span> : ${recipe.categorie}`;
 
   // Temps de préparation
@@ -265,7 +261,7 @@ function createModalContent(recipe, index) {
   figCaption.append(category, time, ingredientsTitle, ingredientsList);
 
   // Étapes de préparation
-  const stepsTitle = createElement('h3');
+  const stepsTitle = createElement('h3',['pb-3','font-bold']);
   stepsTitle.textContent = 'Étapes:';
 
   const stepsList = createElement('ol');

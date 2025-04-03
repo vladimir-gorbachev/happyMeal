@@ -92,27 +92,13 @@ async function initSearchSystem() {
             item.addEventListener("click", function () {
                 const index = this.getAttribute("data-index");
                 const selectedRecipe = results[index];
+                
+                selectedRecipe.addEventListener('click', () => displayRecipes(i));
     
-                if (selectedRecipe) {
-                    const recipeIndex = recipesData.findIndex(r => r.nom === selectedRecipe.nom);
-                    viewRecipe(recipeIndex); // Ouvre la modale avec la recette correspondante
-                }
+                
             });
         });
-    }
-
-    function viewRecipe(index) {
-        const recipe = allRecipes[index];
-        if (!recipe) return;
-    
-        const modalContent = createModalContent(recipe, index);
-        const modal = document.getElementById('recipeDetails');
-        modal.innerHTML = '';
-        modal.appendChild(modalContent);
-        openModal();
-    }
-    
-
+    }   
     searchInput.addEventListener('input', () => {
         clearTimeout(searchTimer);
         searchTimer = setTimeout(performSearch, 300);

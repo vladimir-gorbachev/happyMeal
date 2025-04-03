@@ -10,13 +10,6 @@ main{
   height: 100%;
 }
 
-.viewRecipeButton{
-  background-color: var(--main-color);
-  width: 80%;
-  justify-content: flex-start;
-  border-radius: 15px;
-}
-
 #modalOverlay{
   position: fixed;
   top: 0;
@@ -41,6 +34,7 @@ main{
   overflow-y: auto;
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  padding: 20px;
   
 }
 
@@ -58,5 +52,5 @@ main{
       height: 10px;
   
     }
-  }
+}
 
