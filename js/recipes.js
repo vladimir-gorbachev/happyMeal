@@ -241,7 +241,7 @@ function createModalContent(recipe, index) {
     }
     
     // Bouton d'ajout
-    const addToListButton = createElement('button', ['ml-2', 'text-blue-500', 'button', 'rounded-xl','p-1', 'border']);
+    const addToListButton = createElement('button', ['ml-2', 'text-blue-500', 'rounded-xl','p-1', 'border']);
     addToListButton.textContent = 'Ajouter';
     addToListButton.addEventListener('click', () => {
       const escapedIngredient = ingredient.nom.replace(/'/g, "\\'");
