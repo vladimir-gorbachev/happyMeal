@@ -18,7 +18,6 @@ function createElement(tag, classes = [], attributes = {}, children = []) {
 
 const recipesPerPage = 9;
 let currentPage = 1;
-let allRecipes = [];
 
 function updatePaginationButtons() {
   const pagination = document.getElementById('pagination');
@@ -114,31 +113,28 @@ function createButtonsContainer(...buttons) {
 }
 
 function createFavoriteRecipeCard(recipe, index) {
-  const card = createElement('article', [
-    'bg-white', 'rounded-lg', 'shadow-md', 'overflow-hidden', 
-    'w-full', 'md:w-[calc(33.333%-1rem)]', 'min-h-[400px]', 'flex', 'flex-col'
-  ]);
+  const card = createElement('article', ['recipe-card']);
 
-  const content = createElement('div', ['p-4', 'flex-grow', 'flex', 'flex-col']);
+  const content = createElement('div', ['recipe-card-content']);
 
   // Titre
-  const title = createElement('h2', ['font-bold', 'text-lg', 'mb-2', 'pb-2', 'line-clamp-2']);
+  const title = createElement('h2', ['recipe-title']);
   title.textContent = recipe.nom;
 
   // Image
-  const img = createElement('img', ['h-60', 'object-cover', 'rounded', 'pt-6']);
+  const img = createElement('img', ['recipe-image']);
   img.src = recipe.image;
   img.alt = recipe.nom;
 
   // Métadonnées : catégorie et temps
-  const category = createElement('p', ['text-gray-600', 'mb-1']);
+  const category = createElement('p', ['recipe-category']);
   category.textContent = recipe.categorie;
 
-  const time = createElement('p', ['text-gray-500', 'text-sm']);
+  const time = createElement('p', ['recipe-time']);
   time.textContent = `⏱ ${recipe.temps_preparation}`;
 
   // Boutons
-  const viewButton = createElement('button', ['viewRecipeButton']);
+  const viewButton = createElement('button', ['view-recipe-button']);
   viewButton.textContent = 'Voir la recette';
   // Pour les favoris, on utilise une fonction dédiée qui pourra différencier si besoin
   viewButton.addEventListener('click', () => viewFavoriteRecipe(index));
@@ -151,6 +147,9 @@ function createFavoriteRecipeCard(recipe, index) {
   // Assemblage final
   content.append(title, img, category, time, buttonsContainer);
   card.appendChild(content);
+
+  img.addEventListener('click', () => viewRecipe(index));
+
   return card;
 }
 
@@ -183,32 +182,31 @@ function viewFavoriteRecipe(index) {
 }
 
 function createModalContent(recipe, index) {
-  const content = createElement('div', ['p-4', 'flex-grow', 'flex', 'flex-col']);
+  const content = createElement('div', ['recipe-details']);
 
   // Titre
-  const title = createElement('h2', ['font-bold', 'pb-4']);
+  const title = createElement('h2');
   title.textContent = recipe.nom;
 
   // Figure principale
-  const figure = createElement('figure', ['flex', 'flex-wrap']);
+  const figure = createElement('figure', ['flex', 'flex-wrap', 'justify-between']);
 
   // Image
-  const img = createElement('img', ['max-w-[400px]', 'max-h-[400px]', 'object-cover', 'rounded', 'p-4']);
+  const img = createElement('img', ['max-w-[500px]', 'max-h-[400px]', 'rounded', 'object-cover', 'p-4', 'flex', 'flex-shrink', 'flex-grow']);
   img.src = recipe.image;
   img.alt = recipe.nom;
 
   // Légende
   const figCaption = createElement('figcaption');
-  figCaption.classList = "pl-3 max-w-[550px] flex justify-space-between flex-wrap";
+  figCaption.classList = "pl-3 pr-3 max-w-[450px] flex justify-space-between flex-wrap flex-grow";
 
   // Catégorie
-  const category = createElement('h3', ['pb-4']);
-  category.innerHTML = `<span class="font-bold">Catégorie</span> : ${recipe.categorie}`;
+  const category = createElement('h3',['w-full']);
+  category.innerHTML = `<span style="font-weight:bold">Catégorie</span> : ${recipe.categorie}`;
 
   // Temps de préparation
-  const time = createElement('p', ['pb-4']);
-  time.innerHTML = `<span class="font-bold">Temps de préparation:</span> ${recipe.temps_preparation}`;
-  time.classList="w-full pb-4";
+  const time = createElement('p');
+  time.innerHTML = `<span style="font-weight:bold">Temps de préparation:</span> ${recipe.temps_preparation}`;
 
   // Ingrédients
   const ingredientsTitle = createElement('h3');
@@ -230,7 +228,7 @@ function createModalContent(recipe, index) {
     }
     
     // Bouton d'ajout
-    const addToListButton = createElement('button', ['ml-2', 'text-blue-500', 'button', 'rounded-xl','p-1', 'border']);
+    const addToListButton = createElement('button', ['ml-2', 'text-blue-500', 'rounded-xl','p-1', 'border']);
     addToListButton.textContent = 'Ajouter';
     addToListButton.addEventListener('click', () => {
       const escapedIngredient = ingredient.nom.replace(/'/g, "\\'");
@@ -241,32 +239,30 @@ function createModalContent(recipe, index) {
     ingredientsList.appendChild(li);
   });
 
-  
+  // Bouton favoris créé via la fonction externalisée
   const favButton = createFavButton(recipe, index);
   // Pour la modale, on peut ajuster la position du bouton
-  favButton.classList.add('absolute', 'top-5', 'right-[45px]');
+  favButton.classList.add('absolute', 'top-3', 'right-[45px]');
 
   // Assemblage figcaption
   figCaption.append(category, time, ingredientsTitle, ingredientsList);
 
   // Étapes de préparation
-  const stepsTitle = createElement('h3', ['font-bold', 'mt-4']);
+  const stepsTitle = createElement('h3',['pb-3','font-bold']);
   stepsTitle.textContent = 'Étapes:';
 
-  const stepsList = createElement('ol', ['m-2']);
-  stepsList.classList="list-decimal p-6";
+  const stepsList = createElement('ol');
   recipe.etapes.forEach(step => {
-    const li = createElement('li');
-    li.textContent = step;
-    li.classList="p-2";
-    stepsList.appendChild(li);
+      const li = createElement('li');
+      li.textContent = step;
+      stepsList.appendChild(li);
   });
 
   // Assemblage final
   figure.append(img, figCaption);
   content.append(
-    title, 
-    favButton,
+    title,
+    favButton,  
     figure, 
     stepsTitle, 
     stepsList,

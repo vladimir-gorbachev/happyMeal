@@ -19,7 +19,6 @@ async function loadRecipes() {
 
 const recipesPerPage = 9;
 let currentPage = 1;
-let allRecipes = [];
 
 async function initRecipesPage() {
   allRecipes = await loadRecipes();
@@ -195,7 +194,7 @@ function viewRecipe(index) {
 }
 
 function createModalContent(recipe, index) {
-  const content = createElement('div', ['recipe-details']);
+  const content = createElement('div', ['recipe-details','justify-between']);
 
   // Titre
   const title = createElement('h2');
@@ -205,7 +204,7 @@ function createModalContent(recipe, index) {
   const figure = createElement('figure', ['flex', 'flex-wrap', 'justify-between']);
 
   // Image
-  const img = createElement('img', ['max-w-[550px]', 'max-h-[400px]', 'rounded', 'object-cover', 'p-4', 'flex', 'flex-shrink', 'flex-grow']);
+  const img = createElement('img', ['max-w-[500px]', 'max-h-[400px]', 'rounded', 'object-cover', 'p-4', 'flex', 'flex-shrink', 'flex-grow']);
   img.src = recipe.image;
   img.alt = recipe.nom;
 

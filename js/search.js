@@ -2,6 +2,59 @@ document.addEventListener('DOMContentLoaded', function() {
     const params = new URLSearchParams(window.location.search);
     const searchTerm = params.get('query')?.trim();
 
+    // Chargement des recettes et recherche
+    (async () => {
+        setupGlobalListeners();
+        try {
+            const response = await fetch("data/recipes.json");
+            if (!response.ok) throw new Error('Erreur réseau');
+            const data = await response.json();
+            const recipes = data.recettes;
+
+            // Filtrage des résultats
+            results = recipes.filter(recipe => {
+                const nameMatch = normalizeText(recipe.nom).includes(normalizedSearchTerm);
+                const ingredientMatch = recipe.ingredients.some(ing => 
+                    normalizeText(ing.nom).includes(normalizedSearchTerm));
+                const descriptionMatch = normalizeText(recipe.description).includes(normalizedSearchTerm);
+                return nameMatch || ingredientMatch || descriptionMatch;
+            });
+
+            // Affichage des résultats
+            searchResultsContainer.innerHTML = '';
+
+            if (results.length === 0) {
+                searchResultsContainer.innerHTML = `<p class="no-results">Aucune recette trouvée pour "${searchTerm}".</p>`;
+            } else {
+                const resultsTitle = document.createElement('h2');
+                resultsTitle.className = "results-title";
+                resultsTitle.textContent = `${results.length} résultat(s) trouvé(s) pour "${searchTerm}"`;
+                searchResultsContainer.appendChild(resultsTitle);
+
+                results.forEach((recipe, index) => {
+                    const card = createRecipeCard(recipe, index);
+                    searchResultsContainer.appendChild(card);
+                });
+            }
+        } catch (error) {
+            console.error("Erreur:", error);
+            searchResultsContainer.innerHTML = `<p class="error-message">Une erreur est survenue lors de la recherche.</p>`;
+        }
+    })();
+
+    function viewRecipe(index) {
+        const recipe = results[index];
+        if (!recipe) return;
+    
+        const modalContent = createModalContent(recipe, index);
+        const modal = document.getElementById('recipeDetails');
+        modal.innerHTML = '';
+        modal.appendChild(modalContent);
+        openModal();
+    }
+
+    
+
     // Conteneur des résultats
     const searchResultsContainer = document.getElementById("search-results-container");
     searchResultsContainer.className = "recipes-container";
@@ -94,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'active:text-white',
             'disabled:pointer-events-none'
           ],
-          { 'data-recipe-index': index } // data attribute pour identifier la recette
+          { 'data-recipe-index': index }
         );
         favButton.type = 'button';
       
@@ -148,18 +201,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
-    }
-    
-    
-    function viewRecipe(index) {
-        const recipe = results[index];
-        if (!recipe) return;
-    
-        const modalContent = createModalContent(recipe, index);
-        const modal = document.getElementById('recipeDetails');
-        modal.innerHTML = '';
-        modal.appendChild(modalContent);
-        openModal();
     }
     
     function createModalContent(recipe, index) {
@@ -270,46 +311,4 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.key === 'Escape') closeModal();
         });
     }
-
-
-    // Chargement des recettes et recherche
-    let results = [];
-    (async () => {
-        setupGlobalListeners();
-        try {
-            const response = await fetch("data/recipes.json");
-            if (!response.ok) throw new Error('Erreur réseau');
-            const data = await response.json();
-            const recipes = data.recettes;
-
-            // Filtrage des résultats
-            results = recipes.filter(recipe => {
-                const nameMatch = normalizeText(recipe.nom).includes(normalizedSearchTerm);
-                const ingredientMatch = recipe.ingredients.some(ing => 
-                    normalizeText(ing.nom).includes(normalizedSearchTerm));
-                const descriptionMatch = normalizeText(recipe.description).includes(normalizedSearchTerm);
-                return nameMatch || ingredientMatch || descriptionMatch;
-            });
-
-            // Affichage des résultats
-            searchResultsContainer.innerHTML = '';
-
-            if (results.length === 0) {
-                searchResultsContainer.innerHTML = `<p class="no-results">Aucune recette trouvée pour "${searchTerm}".</p>`;
-            } else {
-                const resultsTitle = document.createElement('h2');
-                resultsTitle.className = "results-title";
-                resultsTitle.textContent = `${results.length} résultat(s) trouvé(s) pour "${searchTerm}"`;
-                searchResultsContainer.appendChild(resultsTitle);
-
-                results.forEach((recipe, index) => {
-                    const card = createRecipeCard(recipe, index);
-                    searchResultsContainer.appendChild(card);
-                });
-            }
-        } catch (error) {
-            console.error("Erreur:", error);
-            searchResultsContainer.innerHTML = `<p class="error-message">Une erreur est survenue lors de la recherche.</p>`;
-        }
-    })();
 });

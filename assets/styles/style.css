@@ -20,15 +20,20 @@ main{
     background-color: var(--color-1);
     padding: 5vh 20px 10vh;
     justify-content: space-between;
-    height: 100%;
+    min-height: 100vh;
 
     h1{
+        font-weight: bold;
 
         margin: 20px;
         text-align: center;
         font-weight: normal;
         font-family: var(--font-family);
     }
+}
+
+h1, h2, h3, h4{
+    font-weight: bold;
 }
 
 .favorite-button{
@@ -46,7 +51,7 @@ main{
     padding: 10px 20px;
     background: var(--color-1);
     font-size: 15px;
-    max-height: 10vh;
+    max-height: 12vh;
 }
 
 .header-nav{
@@ -153,22 +158,6 @@ main{
     display: flex;
     justify-content: center;
 
-}
-
-.modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    max-width: 500px;
-    text-align: center;
-}
-
-.modal-content img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 1rem;
 }
 
 .loading-message, .no-results, .error-message {
@@ -297,8 +286,8 @@ footer {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-bottom: 2%;
-    width: 100vw;;
+    padding-bottom: 5%;
+    width: 100%;;
 
     span{
         font-family: var(--font-title);
@@ -447,6 +436,10 @@ footer {
     display: flex;
     flex-flow: row wrap;
     justify-content:center ;
+}
+
+#recipeDetails{
+    width: 100%;
 }
   
 /* Carte recette */

@@ -17,7 +17,7 @@ async function loadRecipes() {
   }
 }
 
-let allRecipes = [];
+allRecipes = [];
 let shuffledRecipes = [];
 const recipesPerPage = 3;
 let currentPage = 1;
@@ -26,7 +26,7 @@ let currentPage = 1;
 async function initRecipesPage() {
   allRecipes = await loadRecipes();
 
-  shuffledRecipes = [...allRecipes];
+  shuffledRecipes = allRecipes.slice();
   for (let i = shuffledRecipes.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffledRecipes[i], shuffledRecipes[j]] = [shuffledRecipes[j], shuffledRecipes[i]];
