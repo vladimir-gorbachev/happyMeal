@@ -12,9 +12,14 @@ document.addEventListener("DOMContentLoaded", async function() {
     console.log("Input:", document.querySelector(".search-input"));
     console.log("Search container:", document.querySelector(".search-container"));
     console.log("Results container:", document.querySelector(".search-results"));
-  
+    
+
+    const searchInput = document.querySelector("input.search-input");
+    if (!searchInput) {
+    console.error("L'input de recherche n'est pas présent dans le DOM.");
+    return;
+  }
     // Initialisation unique de SearchManager (attention à ne pas doubler cette étape)
-    const searchInput = document.querySelector(".search-input");
     const searchContainer = document.querySelector(".search-container");
     const searchResults = document.querySelector(".search-results");
   
@@ -24,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         paginationId: 'pagination',
         modalOverlayId: 'modalOverlay',
         modalDetailsId: 'recipeDetails',
-        searchInputSelector: ".search-input",
+        searchInputSelector: "input.search-input",
         searchContainerSelector: ".search-container",
         searchResultsSelector: ".search-results",
         recipesUrl: "data/recipes.json",
@@ -35,5 +40,13 @@ document.addEventListener("DOMContentLoaded", async function() {
     } else {
       console.error("Les éléments de recherche ne sont pas présents dans le DOM.");
     }
-  });
+
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get('query') || '';
+
+    if (query) {
+        searchInput.value = query;
+        searchManager.performSearch();
+    }
+});
   
