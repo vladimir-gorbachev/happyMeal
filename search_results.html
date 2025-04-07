@@ -8,13 +8,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&family=Parisienne&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets\styles\style.css">
+    
+
+
+    <script src="js/rework.js" defer></script>
+
     <script src="js/header.js" defer></script>
     <script src="js/footer.js" defer></script>
     <script src="js/search.js" defer></script>
-    <!-- <script src="js/recipes.js" defer></script> -->
 
     <script src="js/shopping_list.js" defer></script>
+
+    <link rel="stylesheet" href="assets\styles\style.css">
     
     <script src="https://cdn.tailwindcss.com" defer></script>
     
@@ -22,14 +27,16 @@
 </head>
 <body>
     <header></header>
-    <main>
+    <main class="main">
         <h1>Résultats de la recherche</h1>
         <div id="search-results-container"></div>
-        <section id="modalOverlay" class="">
-            <div id="modalContent" class="">
+
+        <section id="modalOverlay" class="modalOverlay">
+            <div id="modalContent" class="modalContent">
                 <article id="recipeDetails"></article>
             </div>
         </section>
+
         <section >
             <div id="recipesContainer"></div>
         </section>

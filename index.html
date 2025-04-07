@@ -5,12 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>autreMent</title>
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
-    <link rel="stylesheet" href="assets/styles/style.css">
-    <script src="js/header.js" defer></script>
-    <script src="js/footer.js" defer></script>
+    
+
+
+    <script src="js/rework.js" defer></script>
     <script src="js/index.js" defer></script>
 
+    <script src="js/header.js" defer></script>
+    <script src="js/footer.js" defer></script>
+
+    
+
     <script src="https://cdn.tailwindcss.com" defer></script>
+
+    <link rel="stylesheet" href="assets/styles/style.css">
 </head>
 
 <body>
@@ -22,8 +30,8 @@
             <a href="recipes.html"><button class="button view-recipe-button">Découvrir les recettes</button></a>
         </div>
         
-        <section class="modalOverlay">
-            <div class="modalContent">
+        <section id="modalOverlay" class="modalOverlay">
+            <div id="modalContent" class="modalContent">
                 <article id="recipeDetails"></article>
             </div>
         </section>
