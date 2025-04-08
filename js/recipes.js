@@ -12,9 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
   manager.init();
 });
 
-// ✅ Listen to the event and refresh the cards when favorites change
+// Listen to the event and refresh the cards when favorites change
 window.addEventListener('favoritesUpdated', () => {
   if (manager) {
-    manager.displayRecipes(); // remet à jour l'affichage des cartes
+    manager.displayRecipes(); 
   }
 });

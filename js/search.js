@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const normalizedSearchTerm = normalizeText(searchTerm);
     
-    // Indicateur de chargement
     searchResultsContainer.innerHTML = `<p class="loading-message">Recherche en cours...</p>`;
 
     function createElement(tag, classes = [], attributes = {}, children = []) {
@@ -27,29 +26,24 @@ document.addEventListener('DOMContentLoaded', function() {
         return element;
     }
 
-    // Fonction pour créer une carte de recette
     function createRecipeCard(recipe, index) {
         const card = createElement('article', ['recipe-card']);
       
         const content = createElement('div', ['recipe-card-content']);
-        
-        // Titre
+
         const title = createElement('h2', ['recipe-title']);
         title.textContent = recipe.nom;
       
-        // Image
         const img = createElement('img', ['recipe-image']);
         img.src = recipe.image;
         img.alt = recipe.nom;
       
-        // Métadonnées
         const category = createElement('p', ['recipe-category']);
         category.textContent = recipe.categorie;
       
         const time = createElement('p', ['recipe-time']);
         time.textContent = `⏱ ${recipe.temps_preparation}`;
       
-        // Boutons
         const viewButton = createElement('button', ['view-recipe-button']);
         viewButton.textContent = 'Voir la recette';
         viewButton.addEventListener('click', () => viewRecipe(index));
@@ -58,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
       
         const buttonsContainer = createButtonsContainer(viewButton, favButton);
       
-        // Assemblage final
         content.append(title, img, category, time, buttonsContainer);
         card.appendChild(content);
       
@@ -68,14 +61,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function createFavButton(recipe, index) {
-        // Récupérer les favoris depuis localStorage
         const favorites = (JSON.parse(localStorage.getItem('favoriteRecipes')) || [])
         .filter(fav => fav && typeof fav === 'object' && fav?.nom);
         const isFavorite = favorites.find(fav => fav?.nom === recipe.nom);
-        // Choisir la couleur du fill : rouge si favorite, sinon currentColor (ou noir, par exemple)
         const fillColor = isFavorite ? 'red' : '#D3D3D3';
       
-        // Création du bouton favoris avec une classe commune et un data attribute pour l'index
+        // fav button
         const favButton = createElement(
           'button',
           [
@@ -93,18 +84,16 @@ document.addEventListener('DOMContentLoaded', function() {
             'active:text-white',
             'disabled:pointer-events-none'
           ],
-          { 'data-recipe-index': index } // data attribute pour identifier la recette
+          { 'data-recipe-index': index } // data attribute 
         );
         favButton.type = 'button';
       
-        // Insertion du SVG dans le bouton en utilisant fillColor
         favButton.innerHTML = `
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${fillColor}" class="w-4 h-4">
             <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
           </svg>
         `;
-      
-        // Lier l'événement pour basculer l'état favorite
+  
         favButton.addEventListener('click', () => toggleFavorite(index));
       
         return favButton;
@@ -125,19 +114,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const exists = favorites.find(fav => fav?.nom === recipe.nom);
         if (exists) {
-        // Si la recette est déjà favorite, on la retire
+  
         favorites.splice(favorites.indexOf(exists), 1);
-        // Remettre le fill du SVG à sa valeur par défaut
+
         favButtons.forEach(button => {
             const svg = button.querySelector('svg');
             if (svg) {
-            svg.setAttribute('fill', 'currentColor');
+            svg.setAttribute('fill', '#D3D3D3');
             }
         });
         } else {
-        // Sinon, on ajoute la recette aux favoris
         favorites.push(recipe);
-        // Changer le fill du SVG en rouge
+        // svg fill
         favButtons.forEach(button => {
             const svg = button.querySelector('svg');
             if (svg) {
@@ -164,11 +152,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function createModalContent(recipe, index) {
         const content = createElement('div', ['recipe-details']);
     
-        // Titre
+        // Title
         const title = createElement('h2');
         title.textContent = recipe.nom;
     
-        // Figure principale
+        // Figure
         const figure = createElement('figure', ['flex', 'flex-wrap', 'justify-between']);
     
         // Image
@@ -176,19 +164,19 @@ document.addEventListener('DOMContentLoaded', function() {
         img.src = recipe.image;
         img.alt = recipe.nom;
     
-        // Légende
+        // figcaption
         const figCaption = createElement('figcaption');
         figCaption.classList = "pl-3 pr-3 max-w-[450px] flex justify-space-between flex-wrap flex-grow";
     
-        // Catégorie
+        // Category
         const category = createElement('h3',['w-full']);
         category.innerHTML = `<span style="font-weight:bold">Catégorie</span> : ${recipe.categorie}`;
     
-        // Temps de préparation
+        // Time
         const time = createElement('p');
         time.innerHTML = `<span style="font-weight:bold">Temps de préparation:</span> ${recipe.temps_preparation}`;
     
-        // Ingrédients
+        // Ingredients
         const ingredientsTitle = createElement('h3');
         ingredientsTitle.textContent = "Ingrédients: ";
         ingredientsTitle.classList = "w-full font-bold pb-2";
@@ -198,8 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
         recipe.ingredients.forEach(ingredient => {
         const li = createElement('li');
         li.classList="w-full flex wrap justify-between"
-    
-        // Création d'un <span> pour le texte de l'ingrédient
+
         const ingredientSpan = createElement('span');
         if (ingredient.quantite) {
             ingredientSpan.textContent = `${ingredient.quantite} - ${ingredient.nom}`;
@@ -207,7 +194,6 @@ document.addEventListener('DOMContentLoaded', function() {
             ingredientSpan.textContent = `${ingredient}`;
         }
         
-        // Bouton d'ajout
         const addToListButton = createElement('button', ['ml-2', 'text-blue-500', 'rounded-xl','p-1', 'border']);
         addToListButton.textContent = 'Ajouter';
         addToListButton.addEventListener('click', () => {
@@ -219,15 +205,14 @@ document.addEventListener('DOMContentLoaded', function() {
         ingredientsList.appendChild(li);
         });
     
-        // Bouton favoris créé via la fonction externalisée
+        // FAV BUTTON
         const favButton = createFavButton(recipe, index);
-        // Pour la modale, on peut ajuster la position du bouton
         favButton.classList.add('absolute', 'top-3', 'right-[45px]');
     
-        // Assemblage figcaption
+        // figcaption
         figCaption.append(category, time, ingredientsTitle, ingredientsList);
     
-        // Étapes de préparation
+        // STEPS
         const stepsTitle = createElement('h3',['pb-3','font-bold']);
         stepsTitle.textContent = 'Étapes:';
     
@@ -238,7 +223,6 @@ document.addEventListener('DOMContentLoaded', function() {
             stepsList.appendChild(li);
         });
     
-        // Assemblage final
         figure.append(img, figCaption);
         content.append(
         title,
@@ -260,7 +244,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function setupGlobalListeners() {
-        // Fermeture modale
         document.getElementById("modalOverlay").addEventListener('click', (e) => {
             if (e.target === document.getElementById("modalOverlay")) closeModal();
         });
@@ -271,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    // Chargement des recettes et recherche
+    // Loading recipes
     let results = [];
     (async () => {
         setupGlobalListeners();
@@ -281,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             const recipes = data.recettes;
 
-            // Filtrage des résultats
+            // Filter results
             results = recipes.filter(recipe => {
                 const nameMatch = normalizeText(recipe.nom).includes(normalizedSearchTerm);
                 const ingredientMatch = recipe.ingredients.some(ing => 
@@ -290,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return nameMatch || ingredientMatch || descriptionMatch;
             });
 
-            // Affichage des résultats
+            // Display results
             searchResultsContainer.innerHTML = '';
 
             if (results.length === 0) {

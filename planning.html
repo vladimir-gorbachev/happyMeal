@@ -28,17 +28,17 @@
         <div class="container mx-auto p-4">
             <h1 class="text-3xl font-bold mb-8">Planning des Repas</h1>
             
-            <!-- Flèches de navigation de la semaine -->
+            <!--nav -->
             <div class="flex justify-center items-center mb-4">
                 <button id="previous-week-btn" class="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded-l-md hover:bg-gray-400 transition-colors">← Semaine Précédente</button>
                 <div id="week-display" class="text-xl mx-4 text-center font-semibold text-gray-800"></div>
                 <button id="next-week-btn" class="px-4 py-2 bg-gray-300 text-gray-700 font-semibold rounded-r-md hover:bg-gray-400 transition-colors">Semaine Suivante →</button>
             </div>
     
-            <!-- Planning des repas -->
+            <!-- Planning -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="planning-container"></div>
             
-            <!-- Bouton pour réinitialiser -->
+            <!-- reset button -->
             <button id="reset-planning-btn" class="mt-8 px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600 transition-colors">Réinitialiser le Planning</button>
             <button onclick="generatePDF(weekDays, planning)" 
             class="mt-8 px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition-colors">Télécharger le planning en PDF</button>
