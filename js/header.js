@@ -7,8 +7,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     } catch (error) {
       console.error('Erreur lors du chargement du header:', error);
     }
-  
-    // Vérification des éléments de recherche
     console.log("Input:", document.querySelector(".search-input"));
     console.log("Search container:", document.querySelector(".search-container"));
     console.log("Results container:", document.querySelector(".search-results"));
@@ -19,7 +17,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     console.error("L'input de recherche n'est pas présent dans le DOM.");
     return;
   }
-    // Initialisation unique de SearchManager (attention à ne pas doubler cette étape)
     const searchContainer = document.querySelector(".search-container");
     const searchResults = document.querySelector(".search-results");
   
